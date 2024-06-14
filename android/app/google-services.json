@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "127821020960",
+    "project_id": "youthology-ebe06",
+    "storage_bucket": "youthology-ebe06.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:127821020960:android:733f7c23c53d4150af2145",
+        "android_client_info": {
+          "package_name": "com.youthology"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbg_gOBeeMaxxNwQlvOBIJrq5lqxhW514"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
