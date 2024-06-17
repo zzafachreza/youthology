@@ -47,7 +47,14 @@ export default function BottomNavigator({ state, descriptors, navigation }) {
           });
 
           if (!isFocused && !event.defaultPrevented) {
-            navigation.navigate(route.name);
+            if (label == 'Treatment') {
+              navigation.navigate(route.name, {
+                open: 'Treatment'
+              });
+            } else {
+              navigation.navigate(route.name);
+            }
+
           }
         };
 

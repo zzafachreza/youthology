@@ -1,8 +1,8 @@
 import { FlatList, Image, ImageBackground, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { Color, fonts, windowHeight } from '../../utils'
+import { Color, fonts, windowHeight, windowWidth } from '../../utils'
 import { StatusBar } from 'react-native'
-import { getData } from '../../utils/localStorage';
+import { apiURL, getData, storeData } from '../../utils/localStorage';
 import KulitBerjerawat from '../../assets/KulitBerjerawat.svg'
 import KulitKusam from '../../assets/KulitKusam.svg'
 import KulitKendur from '../../assets/KulitKendur.svg'
@@ -14,6 +14,8 @@ import moment from 'moment';
 import { Icon } from 'react-native-elements';
 import Modal from "react-native-modal";
 import { Toast, useToast } from 'react-native-toast-notifications';
+import axios from 'axios';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function Home({ navigation, route }) {
 
@@ -25,58 +27,76 @@ export default function Home({ navigation, route }) {
 
   const [dataJawdal, setDataJadwal] = useState([
     {
-      perawatan: 'Milky Laser Booster',
-      tanggal: '2024-06-23',
-      jam_mulai: '09:00',
-      jam_selesai: '10:00'
-    }, {
-      perawatan: 'Skin Booster',
-      tanggal: '2024-06-05',
-      jam_mulai: '13:00',
-      jam_selesai: '14:00'
-    }, {
-      perawatan: 'Snowpeel Facial',
-      tanggal: '2024-06-10',
-      jam_mulai: '11:00',
-      jam_selesai: '12:00'
+      nama_perawatan: 'Milky Laser Booster',
+      tanggal_janji: '2024-06-23',
+      jam_janji: '09:00',
     },
-    {
-      perawatan: 'Derma Collagen',
-      tanggal: '2024-05-28',
-      jam_mulai: '14:00',
-      jam_selesai: '16:00'
-    }
   ])
 
-  const [dataArtikel, setDataArtikel] = useState([
-    {
-      judul: 'Perkenalkan Onda Pro dengan teknologi “Coolwaves”',
-      image: require('../../assets/artikelHome.png'),
-      desc: 'Youthology Clinic menghadirkan...'
-    },
-    {
-      judul: 'Perkenalkan Onda Pro dengan teknologi “Coolwaves”',
-      image: require('../../assets/artikelHome.png'),
-      desc: 'Youthology Clinic menghadirkan...'
-    },
-    {
-      judul: 'Perkenalkan Onda Pro dengan teknologi “Coolwaves”',
-      image: require('../../assets/artikelHome.png'),
-      desc: 'Youthology Clinic menghadirkan...'
-    },
-  ])
+  const [dataArtikel, setDataArtikel] = useState([]);
+  const [dataKulit, setDataKulit] = useState([]);
 
 
   const REWARD = [20, 25, 30, 35, 40, 45, 50];
+  const isFocus = useIsFocused();
 
 
   useEffect(() => {
+    __GetDataArtikel();
+    __GetDataKulit();
 
-    getData('user').then(res => {
-      setUser(res);
-      setModalVisible2(true);
+    if (isFocus) {
+      __getJadwal();
+      __GetUserProfile();
+    }
+
+  }, [isFocus]);
+
+  const __GetDataArtikel = () => {
+    axios.post(apiURL + 'artikel', {
+      limit: 3,
+      tipe: 'Regular'
+    }).then(res => {
+      console.log(res.data);
+      setDataArtikel(res.data);
     })
-  }, [])
+  }
+
+  const __GetDataKulit = () => {
+    axios.post(apiURL + 'artikel', {
+      tipe: 'Masalah Kulit'
+    }).then(res => {
+      console.log(res.data);
+      setDataKulit(res.data);
+    })
+  }
+
+  const __GetUserProfile = () => {
+    getData('user').then(uu => {
+      axios.post(apiURL + 'user_data', {
+        id: uu.id
+      }).then(res => {
+        console.log(res.data);
+        storeData('user', res.data)
+        setUser(res.data);
+      })
+    })
+  }
+
+
+  const __getJadwal = () => {
+    getData('user').then(uu => {
+      axios.post(apiURL + 'appointment', {
+        fid_user: uu.id
+      }).then(res => {
+        console.log('jadwal', res.data);
+        setDataJadwal(res.data);
+      })
+    })
+  }
+
+
+
 
   return (
     <SafeAreaView style={{
@@ -117,8 +137,8 @@ export default function Home({ navigation, route }) {
           justifyContent: 'space-between',
           alignItems: 'center'
         }}>
-          <TouchableOpacity>
-            <Image source={require('../../assets/badgeSilver.png')} style={{
+          <TouchableOpacity onPress={() => navigation.navigate('Member')}>
+            <Image source={user.member == 'Silver' ? require('../../assets/badgeSilver.png') : user.member == 'Gold' ? require('../../assets/badgeGold.png') : require('../../assets/badgePlatinum.png')} style={{
               width: 100,
               resizeMode: 'contain',
               height: 35
@@ -222,38 +242,46 @@ export default function Home({ navigation, route }) {
             ...fonts.headline4,
             color: Color.blueGray[900]
           }}>Masalah Kulitmu</Text>
-          <View style={{
-            marginTop: 12,
-            flexDirection: 'row',
-            justifyContent: 'space-between'
-          }}>
-            <TouchableOpacity style={{
+          <FlatList contentContainerStyle={{
+            flex: 0.5,
+            justifyContent: 'space-around',
+            marginVertical: 10,
+          }} data={dataKulit} numColumns={2} renderItem={({ item, index }) => {
+            return (
+              <TouchableOpacity onPress={() => navigation.navigate('Treatment', {
+                judul: item.judul
+              })} style={{
 
-            }}>
-              <KulitBerjerawat />
-            </TouchableOpacity>
-            <TouchableOpacity style={{
+                overflow: 'hidden'
+              }}>
 
-            }}>
-              <KulitKusam />
-            </TouchableOpacity>
-          </View>
-          <View style={{
-            marginTop: 12,
-            flexDirection: 'row',
-            justifyContent: 'space-between'
-          }}>
-            <TouchableOpacity style={{
+                <ImageBackground source={require('../../assets/bgkulit.png')} style={{
+                  height: 60,
+                  width: windowWidth / 2.2,
+                  marginHorizontal: 2,
+                  borderRadius: 12,
+                  marginVertical: 4,
+                  padding: 12,
+                  flexDirection: 'row',
+                  alignItems: 'center'
+                }}>
 
-            }}>
-              <KulitBerjerawat />
-            </TouchableOpacity>
-            <TouchableOpacity style={{
+                  <Text style={{
+                    flex: 1,
+                    ...fonts.headline5,
+                    color: Color.white[900]
+                  }}>{item.judul}</Text>
+                  <Image source={{
+                    uri: item.image
+                  }} style={{
+                    width: 30,
+                    height: 30,
+                  }} />
+                </ImageBackground>
 
-            }}>
-              <KulitKusam />
-            </TouchableOpacity>
-          </View>
+              </TouchableOpacity>
+            )
+          }} />
         </View>
 
         {/* JADWAL PERAWATANMU*/}
@@ -270,7 +298,9 @@ export default function Home({ navigation, route }) {
               ...fonts.headline4,
               color: Color.blueGray[900]
             }}>Jadwal Perawatanmu</Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('Treatment', {
+              open: 'Jadwal'
+            })}>
               <Text style={{
                 ...fonts.subheadline3,
                 color: Color.blueGray[900]
@@ -279,7 +309,7 @@ export default function Home({ navigation, route }) {
           </View>
           <FlatList showsHorizontalScrollIndicator={false} horizontal data={dataJawdal} renderItem={({ item, index }) => {
             return (
-              <TouchableWithoutFeedback>
+              <TouchableWithoutFeedback onPress={() => navigation.navigate('JadwalDetail', item)}>
                 <View style={{
                   height: 80,
                   width: 288,
@@ -307,7 +337,7 @@ export default function Home({ navigation, route }) {
                         ...fonts.headline5,
                         flex: 1,
                         color: Color.blueGray[900],
-                      }}>{item.perawatan}</Text>
+                      }}>{item.nama_perawatan}</Text>
                       <MyIcon name='calendar-mark' size={24} color={index % 2 == 1 ? Color.secondary[900] : Color.primary[900]} />
                     </View>
 
@@ -320,7 +350,7 @@ export default function Home({ navigation, route }) {
                         ...fonts.caption1,
                         marginLeft: 4,
                         color: Color.blueGray[400]
-                      }}>{moment(item.tanggal).format('DD MMMM YYYY')}</Text>
+                      }}>{moment(item.tanggal_janji).format('DD MMMM YYYY')}</Text>
 
                       <View style={{
                         marginHorizontal: 8,
@@ -332,7 +362,7 @@ export default function Home({ navigation, route }) {
                         ...fonts.caption1,
                         marginLeft: 4,
                         color: Color.blueGray[400]
-                      }}>{item.jam_mulai} - {item.jam_selesai}</Text>
+                      }}>{moment(moment().format('YYYY-MM-DD ' + item.jam_janji)).format('HH:mm')} - {moment(moment().format('YYYY-MM-DD ' + item.jam_janji)).add(1, 'hours').format('HH:mm')}</Text>
 
                     </View>
                   </View>
@@ -357,7 +387,7 @@ export default function Home({ navigation, route }) {
 
           <FlatList data={dataArtikel} renderItem={({ item, index }) => {
             return (
-              <TouchableWithoutFeedback>
+              <TouchableWithoutFeedback onPress={() => navigation.navigate('BlogDetail', item)}>
                 <View style={{
                   height: 180,
                   width: '100%',
@@ -384,9 +414,9 @@ export default function Home({ navigation, route }) {
                       <Text style={{
                         ...fonts.caption1,
                         color: Color.blueGray.artikelDesc,
-                      }}>{item.desc}</Text>
+                      }}>{item.judul}</Text>
                     </View>
-                    <TouchableOpacity style={{
+                    <TouchableOpacity onPress={() => navigation.navigate('BlogDetail', item)} style={{
                       flexDirection: 'row',
                       alignItems: 'center',
                       width: 100,
@@ -406,9 +436,12 @@ export default function Home({ navigation, route }) {
                   <View style={{
                     // flex: 0.8
                   }}>
-                    <Image source={item.image} style={{
+                    <Image source={{
+                      uri: item.image
+                    }} style={{
                       height: 160,
                       width: 120,
+                      borderRadius: 8,
                       // resizeMode: 'cover'
                     }} />
                   </View>
@@ -418,7 +451,7 @@ export default function Home({ navigation, route }) {
             )
           }} />
 
-          <TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={() => navigation.navigate('Blog')}>
             <View style={{
               height: 42,
               borderWidth: 2,

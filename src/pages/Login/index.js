@@ -1,7 +1,7 @@
 import { StatusBar, Image, ImageBackground, SafeAreaView, StyleSheet, Text, View, TouchableWithoutFeedback, TextInput, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Color, fonts } from '../../utils'
-import { apiURL, api_token, getData } from '../../utils/localStorage'
+import { apiURL, api_token, getData, storeData } from '../../utils/localStorage'
 import { MyButton, MyGap, MyIcon } from '../../components'
 import { maskJs, maskCurrency } from 'mask-js';
 import axios from 'axios'
@@ -34,8 +34,9 @@ export default function Login({ navigation, route }) {
             type: 'success',
             id: 'zvl'
           });
-          navigation.replace('MainApp');
           storeData('user', res.data.data)
+          navigation.replace('MainApp');
+
         } else {
           toast.show(res.data.message, {
             type: 'error',

@@ -2,7 +2,7 @@ import { FlatList, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableO
 import React, { useEffect, useState } from 'react'
 import { Color, fonts } from '../../utils'
 import { StatusBar } from 'react-native'
-import { getData } from '../../utils/localStorage';
+import { apiURL, getData, storeData } from '../../utils/localStorage';
 import { MyIcon } from '../../components';
 import { ImageBackground } from 'react-native';
 import moment from 'moment';
@@ -11,18 +11,37 @@ import IconTentang from '../../assets/IconTentang.svg';
 import IconVoucher from '../../assets/IconVoucher.svg';
 import IconShare from '../../assets/IconShare.svg';
 import IconKeluar from '../../assets/IconKeluar.svg';
+import { useIsFocused } from '@react-navigation/native';
+import axios from 'axios';
 
 
 export default function Account({ navigation, route }) {
     const [user, setUser] = useState({});
+    const isFocus = useIsFocused();
     useEffect(() => {
-        getData('user').then(res => {
-            setUser(res)
+        if (isFocus) {
+            __GetUserProfile();
+        }
+    }, [isFocus]);
+
+
+    const __GetUserProfile = () => {
+        getData('user').then(uu => {
+            axios.post(apiURL + 'user_data', {
+                id: uu.id
+            }).then(res => {
+                console.log(res.data);
+                setUser(res.data);
+            })
         })
-    }, []);
+    }
 
     const Keluar = () => {
-
+        storeData('user', null);
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'GetStarted' }]
+        })
     }
 
     const MyListAkun = ({ onPress, color = Color.primary[900], icon = <IconEdit />, judul = 'Edit Akun', desc = 'Ubah nama, jenis kelamin, alamat, foto', border = 1 }) => {
@@ -91,12 +110,12 @@ export default function Account({ navigation, route }) {
                 <View style={{
                     padding: 16
                 }}>
-                    <ImageBackground style={{
-                        height: 138,
+                    <ImageBackground imageStyle={{ borderRadius: 20 }} style={{
+                        height: 158,
                         width: '100%',
                         justifyContent: 'center',
                         alignItems: 'center'
-                    }} source={require('../../assets/bgsilver.png')}>
+                    }} source={user.member == 'Silver' ? require('../../assets/bgsilver.png') : user.member == 'Gold' ? require('../../assets/bggold.png') : require('../../assets/bgplatinum.png')}>
 
                         <View style={{
                             flexDirection: 'row'
@@ -122,12 +141,12 @@ export default function Account({ navigation, route }) {
                             }}>
                                 <Text style={{
                                     ...fonts.headline4,
-                                    color: Color.primary[900]
+                                    color: user.member == 'Silver' ? Color.primary[900] : Color.white[900]
                                 }}>{user.nama_lengkap}</Text>
                                 <Text style={{
                                     ...fonts.caption1,
-                                    color: Color.primary[900]
-                                }}>Member Since {moment().format('DD/MM/YYYY')}</Text>
+                                    color: user.member == 'Silver' ? Color.primary[900] : Color.white[900]
+                                }}>Member Since {moment(user.tanggal_daftar).format('DD/MM/YYYY')}</Text>
                             </View>
                         </View>
                         <View style={{
@@ -135,18 +154,18 @@ export default function Account({ navigation, route }) {
                             height: 35,
                             paddingHorizontal: 10,
                             borderWidth: 1,
-                            borderColor: Color.primary[900],
+                            borderColor: user.member == 'Silver' ? Color.primary[900] : Color.white[900],
                             borderRadius: 100,
                             flexDirection: 'row',
                             alignItems: 'center'
                         }}>
-                            <MyIcon size={17} name='gift' color={Color.primary[900]} />
+                            <MyIcon size={17} name='gift' color={user.member == 'Silver' ? Color.primary[900] : Color.white[900]} />
                             <Text style={{
                                 marginHorizontal: 8,
                                 ...fonts.subheadline3,
-                                color: Color.primary[900],
-                            }}>Silver</Text>
-                            <MyIcon size={17} name='round-alt-arrow-right' color={Color.primary[900]} />
+                                color: user.member == 'Silver' ? Color.primary[900] : Color.white[900]
+                            }}>{user.member}</Text>
+                            <MyIcon size={17} name='round-alt-arrow-right' color={user.member == 'Silver' ? Color.primary[900] : Color.white[900]} />
                         </View>
 
                     </ImageBackground>
@@ -166,10 +185,10 @@ export default function Account({ navigation, route }) {
                         marginBottom: 12
                     }}>Pengaturan Umum</Text>
 
-                    <MyListAkun />
-                    <MyListAkun icon={<IconTentang />} judul='Tentang Aplikasi' desc='Informasi tentang aplikasi Youthology Clinic' />
-                    <MyListAkun icon={<IconVoucher />} judul='Voucher Saya' desc='Daftar voucher yang saya miliki' />
-                    <MyListAkun icon={<IconShare />} judul='Bagikan & Ikuti' desc='Bagikan dan ikuti instagram Youthology Clinic' />
+                    <MyListAkun onPress={() => navigation.navigate('EditAccount', user)} />
+                    <MyListAkun onPress={() => navigation.navigate('Tentang', user)} icon={<IconTentang />} judul='Tentang Aplikasi' desc='Informasi tentang aplikasi Youthology Clinic' />
+                    <MyListAkun onPress={() => navigation.navigate('VoucherSaya', user)} icon={<IconVoucher />} judul='Voucher Saya' desc='Daftar voucher yang saya miliki' />
+                    <MyListAkun onPress={() => navigation.navigate('Bagikan', user)} icon={<IconShare />} judul='Bagikan & Ikuti' desc='Bagikan dan ikuti instagram Youthology Clinic' />
                     <MyListAkun onPress={Keluar} icon={<IconKeluar />} color={Color.red[500]} judul='Keluar' desc='Keluar dari akun Anda' border={0} />
 
 

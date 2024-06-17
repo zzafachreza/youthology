@@ -9,7 +9,6 @@ import UserRounded from "../../assets/icon/Bold/UserRounded.svg";
 import UserHeart from '../../assets/icon/Bold/UserHeart.svg'
 import Calendar from '../../assets/icon/Bold/Calendar.svg'
 import Letter from '../../assets/icon/Bold/Letter.svg'
-import CheckCircle from '../../assets/icon/Bold/CheckCircle.svg'
 import CloseCircle from '../../assets/icon/Bold/CloseCircle.svg'
 import InfoCircle from '../../assets/icon/Bold/InfoCircle.svg'
 import InfoSquare from '../../assets/icon/Bold/InfoSquare.svg'
@@ -29,7 +28,12 @@ import Filters from '../../assets/icon/Bold/Filters.svg'
 import Stethoscope from '../../assets/icon/Bold/Stethoscope.svg'
 import MapPoint from '../../assets/icon/Bold/MapPoint.svg'
 import Pen2 from '../../assets/icon/Bold/Pen2.svg'
+import Share from '../../assets/icon/Bold/Share.svg'
+import History3 from '../../assets/icon/Bold/History3.svg'
+import CheckCircle from '../../assets/icon/Bold/CheckCircle.svg'
+import UploadSquare from '../../assets/icon/Bold/UploadSquare.svg'
 
+import QuestionSquare from '../../assets/icon/Bold/QuestionSquare.svg'
 
 
 
@@ -44,8 +48,28 @@ export default function MyIcon({ name = 'eye', size, color }) {
             icon: <Magnifer width={size} height={size} fill={color} />
         },
         {
+            key: 'question-square',
+            icon: <QuestionSquare width={size} height={size} fill={color} />
+        },
+        {
             key: 'pen2',
             icon: <Pen2 width={size} height={size} fill={color} />
+        },
+        {
+            key: 'check-circle',
+            icon: <CheckCircle width={size} height={size} fill={color} />
+        },
+        {
+            key: 'upload-square',
+            icon: <UploadSquare width={size} height={size} fill={color} />
+        },
+        {
+            key: 'history-3',
+            icon: <History3 width={size} height={size} fill={color} />
+        },
+        {
+            key: 'share',
+            icon: <Share width={size} height={size} fill={color} />
         },
         {
             key: 'map-point',
@@ -138,10 +162,7 @@ export default function MyIcon({ name = 'eye', size, color }) {
             key: 'letter',
             icon: <Letter width={size} height={size} fill={color} />
         },
-        {
-            key: 'check-circle',
-            icon: <CheckCircle width={size} height={size} fill={color} />
-        },
+
         {
             key: 'close-circle',
             icon: <CloseCircle width={size} height={size} fill={color} />

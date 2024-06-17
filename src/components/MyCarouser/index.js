@@ -25,34 +25,30 @@ export default function MyCarouser() {
   const navigation = useNavigation();
 
   useEffect(() => {
-    // axios.get(apiURL + 'informasi').then(res => {
-    //   console.log('slider', res.data);
-    //   setData(res.data);
-    // });
+    axios.get(apiURL + 'banner').then(res => {
+      console.log('slider', res.data);
+      setData(res.data);
+    });
   }, []);
 
-  const [data, setData] = useState([
-    {
-      image: require('../../assets/banner.png')
-    },
-    {
-      image: require('../../assets/banner.png')
-    },
-    {
-      image: require('../../assets/banner.png')
-    },
-  ]);
+  const [data, setData] = useState([]);
+
+
 
   const renderCarouselItem = ({ item }) => (
-    <Image
-      source={item.image}
-      style={{
-        resizeMode: 'cover',
-        height: 110,
-        width: 340,
-        borderRadius: 10,
-      }}
-    />
+    <TouchableOpacity onPress={() => navigation.navigate('FlashSale')}>
+      <Image
+        source={{
+          uri: item.image
+        }}
+        style={{
+          resizeMode: 'cover',
+          height: 110,
+          width: 340,
+          borderRadius: 10,
+        }}
+      />
+    </TouchableOpacity>
   );
 
   return (

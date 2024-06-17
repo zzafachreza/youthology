@@ -15,7 +15,22 @@ import {
   CSAdminTanggal,
   CSAdminKonfirmasi,
   CSAdminSuccess,
-  CSAdminJadwal
+  CSAdminJadwal,
+  Blog,
+  BlogDetail,
+  EditAccount,
+  Tetang,
+  VoucherSaya,
+  Bagikan,
+  Tentang,
+  JadwalDetail,
+  FlashSale,
+  Unggah,
+  UnggahSuccess,
+  VoucherDetail,
+  Member,
+  Tukar,
+  Cara
 } from '../pages';
 import { colors } from '../utils';
 import { Icon } from 'react-native-elements';
@@ -120,6 +135,125 @@ export default function Router() {
       <Stack.Screen
         name="CSAdminSuccess"
         component={CSAdminSuccess}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+
+      <Stack.Screen
+        name="Blog"
+        component={Blog}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+
+      <Stack.Screen
+        name="BlogDetail"
+        component={BlogDetail}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+
+
+      <Stack.Screen
+        name="EditAccount"
+        component={EditAccount}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <Stack.Screen
+        name="Tentang"
+        component={Tentang}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <Stack.Screen
+        name="VoucherSaya"
+        component={VoucherSaya}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <Stack.Screen
+        name="Bagikan"
+        component={Bagikan}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <Stack.Screen
+        name="JadwalDetail"
+        component={JadwalDetail}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <Stack.Screen
+        name="FlashSale"
+        component={FlashSale}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <Stack.Screen
+        name="Unggah"
+        component={Unggah}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <Stack.Screen
+        name="UnggahSuccess"
+        component={UnggahSuccess}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+
+      <Stack.Screen
+        name="VoucherDetail"
+        component={VoucherDetail}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+
+      <Stack.Screen
+        name="Member"
+        component={Member}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+
+      <Stack.Screen
+        name="Tukar"
+        component={Tukar}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <Stack.Screen
+        name="Cara"
+        component={Cara}
         options={{
           headerShown: false,
         }}

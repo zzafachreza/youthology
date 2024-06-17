@@ -11,7 +11,20 @@ import Treatment from './Treatment';
 import CSAdminKonfirmasi from './CSAdmin/CSAdminKonfirmasi';
 import CSAdminSuccess from './CSAdmin/CSAdminSuccess';
 import CSAdminJadwal from './CSAdmin/CSAdminJadwal';
-
+import Blog from './Blog';
+import BlogDetail from './Blog/BlogDetail';
+import EditAccount from './Account/EditAccount';
+import VoucherSaya from './Account/VoucherSaya';
+import Bagikan from './Account/Bagikan';
+import Tentang from './Account/Tentang';
+import JadwalDetail from './Treatment/JadwalDetail';
+import FlashSale from './Home/FlashSale';
+import Unggah from './Home/Unggah';
+import UnggahSuccess from './Home/UnggahSuccess';
+import VoucherDetail from './Account/VoucherDetail';
+import Member from './Member';
+import Tukar from './Member/Tukar';
+import Cara from './Member/Cara';
 
 
 
@@ -33,4 +46,18 @@ export {
   CSAdminKonfirmasi,
   CSAdminSuccess,
   Treatment,
+  Blog,
+  BlogDetail,
+  EditAccount,
+  Tentang,
+  VoucherSaya,
+  Bagikan,
+  JadwalDetail,
+  FlashSale,
+  Unggah,
+  UnggahSuccess,
+  VoucherDetail,
+  Tukar,
+  Member,
+  Cara,
 };

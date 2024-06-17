@@ -1,9 +1,35 @@
-import { Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import React from 'react'
-import MyIcon from '../MyIcon'
-import { Color, fonts } from '../../utils'
+import React, { useRef, useEffect, useState } from 'react';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Modal, TouchableWithoutFeedback } from 'react-native';
+import { Color, DimensionThisPhone, MyDimensi, colors, fonts, windowWidth } from '../../utils';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { Icon } from 'react-native-elements';
+import { apiURL, getData } from '../../utils/localStorage';
+import MyIcon from '../MyIcon';
+import axios from 'axios';
 
 export default function MyHeaderPoint({ title = 'CS Admin', level }) {
+    const navigation = useNavigation();
+    const [user, setUser] = useState({});
+    const isFocus = useIsFocused();
+    useEffect(() => {
+        if (isFocus) {
+            __GetUserProfile()
+        }
+
+    }, [isFocus]);
+
+
+    const __GetUserProfile = () => {
+        getData('user').then(uu => {
+            axios.post(apiURL + 'user_data', {
+                id: uu.id
+            }).then(res => {
+                console.log(res.data);
+                setUser(res.data);
+            })
+        })
+    }
+
     return (
         <View style={{
             height: 80,
@@ -23,14 +49,14 @@ export default function MyHeaderPoint({ title = 'CS Admin', level }) {
                 justifyContent: 'space-between',
                 alignItems: 'center'
             }}>
-                <TouchableOpacity>
-                    <Image source={require('../../assets/badgeSilver.png')} style={{
+                <TouchableOpacity onPress={() => navigation.navigate('Member')}>
+                    <Image source={user.member == 'Silver' ? require('../../assets/badgeSilver.png') : user.member == 'Gold' ? require('../../assets/badgeGold.png') : require('../../assets/badgePlatinum.png')} style={{
                         width: 100,
                         resizeMode: 'contain',
                         height: 35
                     }} />
                 </TouchableOpacity>
-                <TouchableOpacity style={{
+                <TouchableOpacity onPress={() => navigation.navigate('Notifikasi')} style={{
                     width: 40,
                     height: 40,
                     borderWidth: 1,

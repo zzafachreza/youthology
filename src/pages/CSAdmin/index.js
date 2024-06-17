@@ -16,8 +16,8 @@ export default function CSAdmin({ navigation, route }) {
     const [kirim, setKirim] = useState({
         nama_lengkap: '',
         telepon: '',
-        jenis_perawatan: '',
-        dokter: '',
+        fid_perawatan: '',
+        fid_dokter: '',
         tanggal_lahir: moment().format('YYYY-MM-DD'),
         jenis_kelamin: 'Perempuan',
         rekam_medis: '',
@@ -26,10 +26,58 @@ export default function CSAdmin({ navigation, route }) {
         jam_janji: ''
     });
 
+
+    const [perawatan, setPerawatan] = useState([
+        {
+            label: '',
+            value: ''
+        }
+    ]);
+
+    const [dokter, setDokter] = useState([
+        {
+            label: '',
+            value: ''
+        }
+    ]);
+
     const sendServer = () => {
         console.log(kirim);
-        navigation.navigate('CSAdminJadwal', kirim)
+        navigation.navigate('CSAdminJadwal', {
+            ...kirim,
+            dokter: dokter.filter(i => i.id == kirim.fid_dokter)[0].label,
+            perawatan: perawatan.filter(i => i.id == kirim.fid_perawatan)[0].label
+        })
     }
+
+    const [user, setUser] = useState({})
+    useEffect(() => {
+        getData('user').then(res => {
+
+            setUser(res);
+            setKirim({
+                ...kirim,
+                fid_user: res.id,
+            })
+            axios.post(apiURL + 'perawatan').then(per => {
+
+                setPerawatan(per.data);
+                axios.post(apiURL + 'dokter').then(dok => {
+                    console.log(dok.data)
+                    setDokter(dok.data);
+                })
+
+                setKirim({
+                    ...kirim,
+                    fid_perawatan: per.data[0].value,
+                    fid_dokter: dok.data[0].value
+                })
+
+            })
+        });
+
+
+    }, [])
     return (
         <SafeAreaView style={{
             flex: 1,
@@ -157,46 +205,20 @@ export default function CSAdmin({ navigation, route }) {
 
                     <MyGap jarak={20} />
                     {/* Jenis Perawatan */}
-                    <MyPicker iconname='cosmetic' label="Jenis Perawatan" onValueChange={x => {
+                    <MyPicker value={kirim.fid_perawatan} iconname='cosmetic' label="Jenis Perawatan" onValueChange={x => {
                         setKirim({
                             ...kirim,
-                            jenis_perawatan: x
+                            fid_perawatan: x
                         })
-                    }} data={[
-                        {
-                            label: 'Milky Laser Booster',
-                            value: 'Milky Laser Booster'
-                        },
-                        {
-                            label: 'Skin Booster',
-                            value: 'Skin Booster'
-                        },
-                        {
-                            label: 'Snowpeel Facial',
-                            value: 'Snowpeel Facial'
-                        }
-                    ]} />
+                    }} data={perawatan} />
                     <MyGap jarak={20} />
                     {/* Jenis Perawatan */}
                     <MyPicker iconname='stethoscope' label="Pilih Dokter" onValueChange={x => {
                         setKirim({
                             ...kirim,
-                            dokter: x
+                            fid_dokter: x
                         })
-                    }} data={[
-                        {
-                            label: 'dr. Kristin Watson',
-                            value: 'dr. Kristin Watson'
-                        },
-                        {
-                            label: 'dr. Thomas Muller',
-                            value: 'dr. Thomas Muller'
-                        },
-                        {
-                            label: 'dr. David Da Silva',
-                            value: 'dr. David Da Silva'
-                        }
-                    ]} />
+                    }} data={dokter} />
 
                     <MyGap jarak={20} />
                     <MyCalendar label="Tanggal Lahir" value={kirim.tanggal_lahir} onDateChange={x => {

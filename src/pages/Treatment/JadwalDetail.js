@@ -12,42 +12,9 @@ import { useToast } from "react-native-toast-notifications";
 import axios from 'axios';
 import Modal from "react-native-modal";
 import { Icon } from 'react-native-elements';
-import KonfirmasiOrder from '../../assets/KonfirmasiOrder.svg'
 
-export default function CSAdminKonfirmasi({ navigation, route }) {
-
+export default function JadwalDetail({ navigation, route }) {
     const [kirim, setKirim] = useState(route.params);
-    const toast = useToast();
-
-    const [isModalVisible, setModalVisible] = useState(false);
-
-    const sendServer = () => {
-        console.log(kirim);
-
-
-        axios.post(apiURL + 'appointement_add', kirim).then(res => {
-            console.log(res.data);
-
-            let WATemplate = `*JADWA JANJI TEMU*%0A%0A`;
-            WATemplate += `Jenis Perawtan = ${kirim.perawatan}%0A`;
-            WATemplate += `Dokter = ${kirim.dokter}%0A%0A`;
-            WATemplate += `Nama Lengkap = ${kirim.nama_lengkap}%0A`;
-            WATemplate += `Jenis Kelamin = ${kirim.jenis_kelamin}%0A`;
-            WATemplate += `Tanggal Lahir = ${kirim.tanggal_lahir}%0A`;
-            WATemplate += `Nomor Teleopn = ${kirim.telepon}%0A`;
-            WATemplate += `No. Rekam Medis = ${kirim.rekam_medis}%0A`;
-            WATemplate += `Alamat = ${kirim.alamat}%0A%0A`;
-            WATemplate += `Tanggal = ${kirim.tanggal_janji}%0A`;
-            WATemplate += `Jam = ${kirim.jam_janji}%0A`;
-            console.log(WATemplate);
-            Linking.openURL('https://wa.me/' + comp.tlp + '?text=' + WATemplate)
-
-            setModalVisible(false);
-            navigation.navigate('CSAdminSuccess', kirim)
-        })
-
-
-    }
     const [comp, setComp] = useState({});
     useEffect(() => {
         axios.post(apiURL + 'company').then(res => {
@@ -66,7 +33,8 @@ export default function CSAdminKonfirmasi({ navigation, route }) {
                     padding: 16,
                 }}>
                     <View style={{
-                        borderRadius: 12,
+                        borderTopLeftRadius: 12,
+                        borderTopRightRadius: 12,
                         backgroundColor: Color.blueGray[50],
                         padding: 12,
                     }}>
@@ -84,39 +52,48 @@ export default function CSAdminKonfirmasi({ navigation, route }) {
                                 <Text style={{
                                     ...fonts.headline5,
                                     color: Color.blueGray[900],
-                                }}>{kirim.perawatan}</Text>
+                                }}>{kirim.nama_perawatan}</Text>
                                 <Text style={{
                                     ...fonts.body3,
                                     color: Color.blueGray[400],
-                                }}>{kirim.dokter}</Text>
+                                }}>{kirim.nama_dokter}</Text>
                             </View>
                         </View>
-                        <View style={{
-                            marginVertical: 12,
-                            borderBottomWidth: 1,
-                            borderBottomColor: Color.blueGray[100]
-                        }}></View>
-                        <TouchableOpacity onPress={() => navigation.pop(2)} style={{
-                            height: 42,
-                            borderWidth: 2,
-                            borderRadius: 8,
-                            borderColor: Color.primary[900],
-                            justifyContent: 'center',
-                            alignItems: 'center'
+                        <Text style={{
+                            marginTop: 12,
+                            ...fonts.body3,
+                            color: Color.blueGray[400],
+                        }}>ID:#YAC{kirim.id}</Text>
+                        <TouchableOpacity onPress={() => {
+                            Linking.openURL(comp.website)
                         }}>
-                            <View style={{
-                                flexDirection: 'row',
-                                alignItems: 'center'
-                            }}>
-                                <MyIcon name='pen2' size={24} color={Color.primary[900]} />
-                                <Text style={{
-                                    ...fonts.headline5,
-                                    color: Color.primary[900],
-                                    marginLeft: 8,
-                                }}>Ubah Perawatan</Text>
-                            </View>
+                            <Image source={require('../../assets/lokasi.png')} style={{
+                                width: '100%',
+                                height: 120,
+                                marginVertical: 12,
+                                borderRadius: 12,
+                            }} />
                         </TouchableOpacity>
 
+
+                    </View>
+                    <View style={{
+                        padding: 10,
+                        borderBottomLeftRadius: 12,
+                        borderBottomRightRadius: 12,
+                        backgroundColor: Color.primary[900],
+                        flexDirection: 'row',
+                        alignItems: 'center'
+                    }}>
+                        <Text style={{
+                            ...fonts.body3,
+                            flex: 1,
+                            color: Color.white[900]
+                        }}>Status</Text>
+                        <Text style={{
+                            ...fonts.body3,
+                            color: Color.yellow[500]
+                        }}>{kirim.status_appointment}</Text>
                     </View>
 
                     <View style={{
@@ -242,31 +219,8 @@ export default function CSAdminKonfirmasi({ navigation, route }) {
                             </View>
 
                         </View>
-                        <View style={{
-                            marginVertical: 12,
-                            borderBottomWidth: 1,
-                            borderBottomColor: Color.blueGray[100]
-                        }}></View>
-                        <TouchableOpacity onPress={() => navigation.pop(2)} style={{
-                            height: 42,
-                            borderWidth: 2,
-                            borderRadius: 8,
-                            borderColor: Color.primary[900],
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                        }}>
-                            <View style={{
-                                flexDirection: 'row',
-                                alignItems: 'center'
-                            }}>
-                                <MyIcon name='pen2' size={24} color={Color.primary[900]} />
-                                <Text style={{
-                                    ...fonts.headline5,
-                                    color: Color.primary[900],
-                                    marginLeft: 8,
-                                }}>Ubah Data</Text>
-                            </View>
-                        </TouchableOpacity>
+
+
                     </View>
 
                     <View style={{
@@ -317,55 +271,11 @@ export default function CSAdminKonfirmasi({ navigation, route }) {
                                 }}>{kirim.jam_janji}</Text>
                             </View>
                         </View>
-                        <View style={{
-                            marginVertical: 12,
-                            borderBottomWidth: 1,
-                            borderBottomColor: Color.blueGray[100]
-                        }}></View>
 
-                        <TouchableOpacity onPress={() => navigation.pop(1)} style={{
-                            height: 40,
-                            borderWidth: 2,
-                            borderRadius: 8,
-                            borderColor: Color.primary[900],
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                        }}>
-                            <View style={{
-                                flexDirection: 'row',
-                                alignItems: 'center'
-                            }}>
-                                <MyIcon name='pen2' size={24} color={Color.primary[900]} />
-                                <Text style={{
-                                    ...fonts.headline5,
-                                    color: Color.primary[900],
-                                    marginLeft: 8,
-                                }}>Ubah Data</Text>
-                            </View>
-                        </TouchableOpacity>
                     </View>
 
 
-                    <TouchableOpacity onPress={() => setModalVisible(true)} style={{
-                        height: 42,
-                        marginTop: 20,
-                        borderRadius: 8,
-                        backgroundColor: Color.primary[900],
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                    }}>
-                        <View style={{
-                            flexDirection: 'row',
-                            alignItems: 'center'
-                        }}>
-                            <MyIcon name='whatsapp' size={24} color={Color.white[900]} />
-                            <Text style={{
-                                ...fonts.headline5,
-                                color: Color.white[900],
-                                marginLeft: 8,
-                            }}>Pesan Sekarang</Text>
-                        </View>
-                    </TouchableOpacity>
+
 
                 </View>
 
@@ -373,131 +283,8 @@ export default function CSAdminKonfirmasi({ navigation, route }) {
 
             </ScrollView>
 
-            <Modal style={{
-                margin: 0,
-            }} isVisible={isModalVisible}
-                backdropOpacity={0.5}
-                animationIn="slideInUp"
-                transparent={true}
-                onRequestClose={() => {
-
-                    setModalVisible(!isModalVisible);
-                }}>
-                <View style={{ flex: 1, justifyContent: 'flex-end' }}>
-                    <View style={{
-                        height: windowHeight / 1.6,
-                        backgroundColor: Color.white[900],
-                        borderTopRightRadius: 32,
-                        borderTopLeftRadius: 32,
-                        paddingTop: 24,
-                        paddingHorizontal: 18
-                    }}>
-                        <View style={{
-                            flexDirection: 'row',
-                            alignItems: 'center'
-                        }}>
-                            <Text style={{
-                                flex: 1,
-                                ...fonts.headline4,
-                                color: Color.blueGray[900],
-                            }}>Konfirmasi Tindakan</Text>
-                            <TouchableOpacity onPress={() => setModalVisible(false)}>
-                                <Icon type='ionicon' size={24} name='close-circle' color={Color.blueGray[400]} />
-                            </TouchableOpacity>
-
-                        </View>
-
-                        <View style={{
-                            flex: 1,
-                            // alignItems: 'center',
-                            justifyContent: 'center',
-                        }}>
-                            <View style={{
-                                justifyContent: 'center',
-                                alignItems: 'center'
-                            }}>
-                                <KonfirmasiOrder />
-                            </View>
-                            <Text style={{
-                                ...fonts.body3,
-                                color: Color.blueGray[900],
-                                textAlign: 'center',
-                            }}>Pemesanan perawatan akan dilanjutkan melalui pesan Whatsapp dengan admin Youthology Clinic. Apakah kamu berkenan untuk melanjutkan?</Text>
-                            <MyGap jarak={20} />
-
-                            <MyButton onPress={sendServer} title="Ya, lanjutkan" />
-
-                            <MyGap jarak={8} />
-
-                            <MyButton onPress={
-                                () => {
-                                    setModalVisible(false);
-                                    toast.show('Pesanan Telah dibatalkan\nSilahkan pilih perawatan lain', {
-                                        type: 'error'
-                                    });
-                                    navigation.repalce('MainApp')
-                                }
-                            } backgroundColor={Color.white} borderSize={2} textColor={Color.primary[900]} title="Tidak, Batalkan" />
-
-                        </View>
-
-
-                    </View>
-                </View>
-            </Modal>
         </SafeAreaView>
     )
 }
 
-const styles = StyleSheet.create({
-    btnAvaliable: {
-        width: 160,
-        marginHorizontal: 6,
-        borderRadius: 100,
-        height: 35,
-        backgroundColor: Color.blueGray[50],
-        borderWidth: 1,
-        padding: 4,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderColor: Color.blueGray[100]
-    },
-    textAvaliable: {
-        ...fonts.subheadline3,
-        color: Color.blueGray[900]
-    },
-    btnSelected: {
-        width: 160,
-        marginHorizontal: 6,
-        borderRadius: 100,
-        height: 35,
-        backgroundColor: Color.secondary[50],
-        borderWidth: 1,
-        padding: 4,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderColor: Color.secondary[900]
-    },
-    textSelected: {
-        ...fonts.subheadline3,
-        color: Color.secondary[900]
-    },
-
-    btnDisable: {
-        width: 160,
-        marginHorizontal: 6,
-        borderRadius: 100,
-        height: 35,
-        backgroundColor: Color.blueGray[50],
-        borderWidth: 1,
-        padding: 4,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderColor: Color.blueGray[100]
-    },
-    textDisable: {
-        ...fonts.subheadline3,
-        color: Color.blueGray[400]
-    }
-
-})
+const styles = StyleSheet.create({})

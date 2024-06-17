@@ -48,7 +48,7 @@ export const Color = {
     500: '#64748B',
     400: '#94A3B8',
     300: '#CBD5E1',
-    200: '#',
+    200: '#E2E8F0',
     100: '#F4F4F5',
     50: '#F8FAFC',
     artikelDesc: '#94A3B8',

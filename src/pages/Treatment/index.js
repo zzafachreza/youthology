@@ -1,57 +1,39 @@
 import { FlatList, Image, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { Color, fonts } from '../../utils'
+import { Color, fonts, windowWidth } from '../../utils'
 import { StatusBar } from 'react-native'
-import { getData } from '../../utils/localStorage';
+import { apiURL, getData } from '../../utils/localStorage';
 import { MyGap, MyHeaderPoint, MyIcon } from '../../components';
 import moment from 'moment';
 import { Icon } from 'react-native-elements';
+import axios from 'axios';
+import RenderHtml from 'react-native-render-html';
+import { useIsFocused } from '@react-navigation/native';
 
-export default function Treatment({ navigation, route }) {
-    const [pilih, setPilih] = useState(0);
-    const [kulit, setKulit] = useState([
+export default function Treatment({ navigation, route = {
+    open: 'Perawatan'
+} }) {
+    const [pilih, setPilih] = useState(route.params.open == 'Jadwal' ? 1 : 0);
+    const systemFonts = [fonts.body3.fontFamily, fonts.headline4.fontFamily];
+    const [dataKulit, setDataKulit] = useState([
         {
-            name: 'Kulit Berjerawat',
-            cek: 1,
-        },
-        {
-            name: 'Kulit Kusam',
-            cek: 0,
-        },
-        {
-            name: 'Kulit Kendur',
-            cek: 0
-        },
-        {
-            name: 'Flek Hitam',
-            cek: 0,
-        },
+            judul: '',
+            tanggal: '',
+            jam: '',
+            image: '',
+
+        }
     ]);
+
 
 
     const [dataJawdal, setDataJadwal] = useState([
         {
-            perawatan: 'Milky Laser Booster',
-            tanggal: '2024-06-23',
-            jam_mulai: '09:00',
-            jam_selesai: '10:00'
-        }, {
-            perawatan: 'Skin Booster',
-            tanggal: '2024-06-05',
-            jam_mulai: '13:00',
-            jam_selesai: '14:00'
-        }, {
-            perawatan: 'Snowpeel Facial',
-            tanggal: '2024-06-10',
-            jam_mulai: '11:00',
-            jam_selesai: '12:00'
+            nama_perawatan: 'Milky Laser Booster',
+            tanggal_janji: '2024-06-23',
+            jam_janji: '09:00',
+
         },
-        {
-            perawatan: 'Derma Collagen',
-            tanggal: '2024-05-28',
-            jam_mulai: '14:00',
-            jam_selesai: '16:00'
-        }
     ]);
 
     const [tmp, setTmp] = useState([
@@ -78,6 +60,44 @@ export default function Treatment({ navigation, route }) {
             jam_selesai: '16:00'
         }
     ]);
+
+    const [selectKulit, setSelectKulit] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const isFocus = useIsFocused();
+
+    useEffect(() => {
+        if (isFocus) {
+            __GetDataKulit();
+            __getJadwal();
+        }
+    }, [isFocus]);
+    const __getJadwal = () => {
+        getData('user').then(uu => {
+            axios.post(apiURL + 'appointment', {
+                fid_user: uu.id
+            }).then(res => {
+                console.log('jadwal', res.data);
+                setDataJadwal(res.data);
+            })
+        })
+    }
+    const __GetDataKulit = () => {
+        setLoading(true);
+        axios.post(apiURL + 'artikel', {
+            tipe: 'Masalah Kulit'
+        }).then(res => {
+            console.log(res.data);
+            let TMP = [...res.data];
+            res.data.map((itm, idx) => {
+                TMP[idx].cek = idx == 0 ? 1 : 0
+            })
+            setDataKulit(TMP);
+        }).finally(() => {
+            setTimeout(() => {
+                setLoading(false);
+            }, 1000)
+        })
+    }
     return (
         <SafeAreaView style={{
             flex: 1,
@@ -128,24 +148,26 @@ export default function Treatment({ navigation, route }) {
 
             {/* SUB HALAMAN TREATMENT */}
             {/* TREATMENT */}
-            {pilih == 0 &&
+            {pilih == 0 && !loading &&
+
                 <View style={{
                     padding: 16
                 }}>
-                    <FlatList showsHorizontalScrollIndicator={false} data={kulit} horizontal renderItem={({ item, index }) => {
+                    <FlatList showsHorizontalScrollIndicator={false} data={dataKulit} horizontal renderItem={({ item, index }) => {
                         return (
                             <TouchableWithoutFeedback onPress={() => {
-                                let TMP = [...kulit];
+                                let TMP = [...dataKulit];
                                 TMP.map((i, idx) => {
-                                    if (i.name == item.name) {
+                                    if (i.judul == item.judul) {
                                         TMP[idx].cek = 1;
 
                                     } else {
                                         TMP[idx].cek = 0;
                                     }
                                 });
-                                setKulit(TMP);
-                                console.log(TMP);
+                                setDataKulit(TMP);
+
+                                setSelectKulit(index)
 
 
                             }}>
@@ -161,22 +183,21 @@ export default function Treatment({ navigation, route }) {
                                     <Text style={{
                                         ...fonts.subheadline3,
                                         color: item.cek > 0 ? Color.primary[900] : Color.blueGray[500],
-                                    }}>{item.name}</Text>
+                                    }}>{item.judul}</Text>
                                 </View>
                             </TouchableWithoutFeedback>
                         )
                     }} />
 
-                    <ScrollView style={{
-                        marginTop: 24,
-                    }} showsVerticalScrollIndicator={false}>
+
+                    <ScrollView showsVerticalScrollIndicator={false}>
                         <View style={{
                             padding: 16,
                         }}>
                             <Text style={{
                                 ...fonts.headline2,
                                 color: Color.blueGray[900]
-                            }}>Perawatan Untuk {kulit.filter(i => i.cek > 0)[0].name}</Text>
+                            }}>{dataKulit[selectKulit].judul}</Text>
                             <View style={{
                                 marginVertical: 8,
                                 flexDirection: 'row',
@@ -190,60 +211,45 @@ export default function Treatment({ navigation, route }) {
                                 }}>
                                     <Text style={{
                                         ...fonts.subheadline3,
-                                        color: Color.blueGray[900]
-                                    }}>Admin</Text>
+                                        color: Color.blueGray[900],
+
+                                    }}>{dataKulit[selectKulit].author}</Text>
                                     <Text style={{
                                         ...fonts.caption1,
                                         color: Color.blueGray[400]
-                                    }}>{moment().format('dddd, DD MMMM YYYY, HH:mm')}</Text>
+                                    }}>{moment(dataKulit[selectKulit].tanggal).format('dddd, DD MMMM YYYY')}, {dataKulit[selectKulit].jam}</Text>
+
+
                                 </View>
 
                             </View>
 
-                            <Image style={{
-                                marginTop: 12,
-                                height: 230,
-                                width: '100%',
-                                resizeMode: 'stretch'
-                            }} source={require('../../assets/ar1.png')} />
 
-                            <Text style={{
-                                marginTop: 12,
-                                ...fonts.body3,
-                                color: Color.blueGray[900]
-                            }}>Figma ipsum component variant main layer. Layout list layout boolean shadow scrolling effect. Font bullet asset overflow create. Align rotate scale stroke blur star vector auto. Team pencil scrolling edit scale.</Text>
-                            <Text style={{
-                                marginTop: 12,
-                                ...fonts.headline4,
-                                color: Color.blueGray[900]
-                            }}>Ragam Perawatan {kulit.filter(i => i.cek > 0)[0].name}</Text>
-                            <Image style={{
-                                marginTop: 12,
-                                height: 230,
-                                width: '100%',
-                                resizeMode: 'stretch'
-                            }} source={require('../../assets/ar1.png')} />
 
-                            <Text style={{
-                                marginTop: 12,
-                                ...fonts.body3,
-                                color: Color.blueGray[900]
-                            }}>Figma ipsum component variant main layer. Layout list layout boolean shadow scrolling effect. Font bullet asset overflow create. Align rotate scale stroke blur star vector auto. Team pencil scrolling edit scale.</Text>
-                            <Text style={{
-                                marginTop: 12,
-                                ...fonts.headline4,
-                                color: Color.blueGray[900]
-                            }}>Jenis Treatment yg Cocok</Text>
-                            <Image style={{
-                                marginTop: 12,
-                                height: 250,
-                                width: '100%',
-                                resizeMode: 'contain'
-                            }} source={require('../../assets/cocok.png')} />
-                            <MyGap jarak={150} />
+                            <RenderHtml
+                                tagsStyles={{
+                                    p: {
+                                        fontFamily: fonts.body3.fontFamily,
+                                        textAlign: 'justify',
+                                        lineHeight: 26,
+                                    },
+                                }}
+                                systemFonts={systemFonts}
+                                contentWidth={windowWidth}
+                                source={{
+                                    html: dataKulit[selectKulit].keterangan
+                                }}
+                            />
+
+
+
                         </View>
                     </ScrollView>
+
+
                 </View>
+
+
             }
             {/* JADWAL */}
             {pilih === 1 &&
@@ -314,6 +320,7 @@ export default function Treatment({ navigation, route }) {
                         </TouchableOpacity>
                     </View>
                     <View style={{
+                        marginTop: 12,
                         flexDirection: 'row',
                         alignItems: 'center',
                         marginBottom: 12,
@@ -326,15 +333,16 @@ export default function Treatment({ navigation, route }) {
                     </View>
                     <FlatList showsVerticalScrollIndicator={false} data={dataJawdal} renderItem={({ item, index }) => {
                         return (
-                            <TouchableWithoutFeedback>
+                            <TouchableWithoutFeedback onPress={() => navigation.navigate('JadwalDetail', item)}>
                                 <View style={{
+                                    marginBottom: 12,
                                     height: 80,
                                     width: '100%',
                                     borderWidth: 1,
                                     borderColor: Color.blueGray[400],
                                     backgroundColor: index % 2 == 1 ? Color.secondary[900] : Color.primary[900],
                                     borderRadius: 12,
-                                    marginBottom: 12,
+                                    marginRight: 8,
                                     overflow: 'hidden',
                                 }}>
                                     <View style={{
@@ -354,7 +362,7 @@ export default function Treatment({ navigation, route }) {
                                                 ...fonts.headline5,
                                                 flex: 1,
                                                 color: Color.blueGray[900],
-                                            }}>{item.perawatan}</Text>
+                                            }}>{item.nama_perawatan}</Text>
                                             <MyIcon name='calendar-mark' size={24} color={index % 2 == 1 ? Color.secondary[900] : Color.primary[900]} />
                                         </View>
 
@@ -367,7 +375,7 @@ export default function Treatment({ navigation, route }) {
                                                 ...fonts.caption1,
                                                 marginLeft: 4,
                                                 color: Color.blueGray[400]
-                                            }}>{moment(item.tanggal).format('DD MMMM YYYY')}</Text>
+                                            }}>{moment(item.tanggal_janji).format('DD MMMM YYYY')}</Text>
 
                                             <View style={{
                                                 marginHorizontal: 8,
@@ -379,7 +387,7 @@ export default function Treatment({ navigation, route }) {
                                                 ...fonts.caption1,
                                                 marginLeft: 4,
                                                 color: Color.blueGray[400]
-                                            }}>{item.jam_mulai} - {item.jam_selesai}</Text>
+                                            }}>{moment(moment().format('YYYY-MM-DD ' + item.jam_janji)).format('HH:mm')} - {moment(moment().format('YYYY-MM-DD ' + item.jam_janji)).add(1, 'hours').format('HH:mm')}</Text>
 
                                         </View>
                                     </View>

@@ -15,6 +15,7 @@ export default function CSAdminJadwal({ navigation, route }) {
 
     const [kirim, setKirim] = useState(route.params);
 
+
     const sendServer = () => {
         console.log(kirim);
         navigation.navigate('CSAdminKonfirmasi', kirim)
