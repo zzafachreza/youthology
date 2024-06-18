@@ -25,6 +25,10 @@ import VoucherDetail from './Account/VoucherDetail';
 import Member from './Member';
 import Tukar from './Member/Tukar';
 import Cara from './Member/Cara';
+import Notifikasi from './Home/Notifikasi';
+import Otp from './Login/Otp';
+import Lupa from './Login/Lupa';
+import Reset from './Login/Reset';
 
 
 
@@ -60,4 +64,8 @@ export {
   Tukar,
   Member,
   Cara,
+  Notifikasi,
+  Otp,
+  Lupa,
+  Reset
 };

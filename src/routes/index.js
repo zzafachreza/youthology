@@ -30,7 +30,11 @@ import {
   VoucherDetail,
   Member,
   Tukar,
-  Cara
+  Cara,
+  Notifikasi,
+  Lupa,
+  Otp,
+  Reset
 } from '../pages';
 import { colors } from '../utils';
 import { Icon } from 'react-native-elements';
@@ -254,6 +258,39 @@ export default function Router() {
       <Stack.Screen
         name="Cara"
         component={Cara}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <Stack.Screen
+        name="Notifikasi"
+        component={Notifikasi}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <Stack.Screen
+        name="Lupa"
+        component={Lupa}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+
+      <Stack.Screen
+        name="Otp"
+        component={Otp}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+      <Stack.Screen
+        name="Reset"
+        component={Reset}
         options={{
           headerShown: false,
         }}

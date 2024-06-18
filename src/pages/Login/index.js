@@ -171,7 +171,7 @@ export default function Login({ navigation, route }) {
               </View>
             </View>
             <MyGap jarak={20} />
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('Lupa')}>
               <Text style={{
                 ...fonts.headline5,
                 color: Color.primary[900],

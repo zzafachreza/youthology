@@ -53,7 +53,7 @@ export default function MyInput({
         }}>
           <MyIcon name={iconname} color={Color.blueGray[300]} size={24} />
         </View>
-        <TextInput onChangeText={onChangeText} value={value} placeholderTextColor={Color.blueGray[400]} placeholder={placeholder} style={{
+        <TextInput maxLength={maxLength} keyboardType={keyboardType} onChangeText={onChangeText} value={value} placeholderTextColor={Color.blueGray[400]} placeholder={placeholder} style={{
           ...fonts.body3,
           flex: 1,
           paddingLeft: 44,

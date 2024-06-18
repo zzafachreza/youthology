@@ -20,11 +20,10 @@ export default function App() {
 
   PushNotification.createChannel(
     {
-      channelId: 'Youthology', // (required)
-      channelName: 'Youthology', // (required)
+      channelId: 'YouthologyID', // (required)
+      channelName: 'YouthologyID', // (required)
       channelDescription: 'A channel to categorise your notifications', // (optional) default: undefined.
-      playSound: true, // (optional) default: true
-      soundName: 'info', // (optional) See `soundName` parameter of `localNotification` function
+      playSound: true, // (optional) default: true // (optional) See `soundName` parameter of `localNotification` function
       vibrate: true, // (optional) default: true. Creates the default vibration patten if true.
       local_notification: true, // prevent loop
 
@@ -42,7 +41,7 @@ export default function App() {
 
     // (required) Called when a remote is received or opened, or local notification is opened
     onNotification: function (notification) {
-      // console.log('NOTIFICATION:', notification);
+      console.log('NOTIFICATION:', notification);
       // getPushNotifikasi(notification.title, notification.message);
     },
 

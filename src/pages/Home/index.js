@@ -16,6 +16,8 @@ import Modal from "react-native-modal";
 import { Toast, useToast } from 'react-native-toast-notifications';
 import axios from 'axios';
 import { useIsFocused } from '@react-navigation/native';
+import messaging from '@react-native-firebase/messaging';
+import PushNotification, { Importance } from 'react-native-push-notification';
 
 export default function Home({ navigation, route }) {
 
@@ -37,27 +39,105 @@ export default function Home({ navigation, route }) {
   const [dataKulit, setDataKulit] = useState([]);
 
 
-  const REWARD = [20, 25, 30, 35, 40, 45, 50];
+  const [REWARD, setREWARD] = useState([0, 0, 0, 0, 0, 0, 0]);
   const isFocus = useIsFocused();
 
 
   useEffect(() => {
     __GetDataArtikel();
     __GetDataKulit();
-
+    updateTOKEN();
     if (isFocus) {
+      getFalshSale();
       __getJadwal();
       __GetUserProfile();
+      __getPoinHarian()
     }
 
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+
+      const json = JSON.stringify(remoteMessage.notification);
+      const obj = JSON.parse(json);
+
+      console.log('remote message', remoteMessage);
+
+      // alert(obj.notification.title)
+      PushNotification.localNotification({
+        /* Android Only Properties */
+        channelId: 'YouthologyID', // (required) channelId, if the channel doesn't exist, notification will not trigger.
+        title: obj.title, // (optional)
+        message: obj.body, // (required)
+        vibrate: true,
+      });
+    });
+
+    messaging().setBackgroundMessageHandler(async remoteMessage => {
+
+      const json = JSON.stringify(remoteMessage.notification);
+      const obj = JSON.parse(json);
+
+      console.log('remote message', remoteMessage);
+
+      PushNotification.localNotification({
+        /* Android Only Properties */
+        channelId: 'YouthologyID', // (required) channelId, if the channel doesn't exist, notification will not trigger.
+        title: obj.title, // (optional)
+        message: obj.body, // (required)
+
+      });
+    });
+
+
+    return unsubscribe;
+
+
   }, [isFocus]);
+
+
+  const [FLASHSALE, setFALSHSALE] = useState(0);
+  const getFalshSale = () => {
+    axios.post(apiURL + 'get_flash_sale').then(res => {
+      setFALSHSALE(res.data);
+    })
+  }
+
+  const updateTOKEN = () => {
+    getData('user').then(uu => {
+      setUser(uu);
+
+      axios.post(apiURL + 'get_token', {
+        id: uu.id
+      }).then(res => {
+
+        getData('token').then(token => {
+          console.log(token.token);
+          // alert(token.token);
+
+          if (token.token !== res.data) {
+            console.log('update TOKEN');
+            axios.post(apiURL + 'update_token', {
+              id: uu.id,
+              token: token.token
+            }).then(resp => {
+              console.log('token berhasil diperbaharui', resp.data)
+            })
+          } else {
+            console.log('token terbaru')
+          }
+        })
+
+      })
+
+
+    })
+  }
 
   const __GetDataArtikel = () => {
     axios.post(apiURL + 'artikel', {
       limit: 3,
       tipe: 'Regular'
     }).then(res => {
-      console.log(res.data);
+
       setDataArtikel(res.data);
     })
   }
@@ -66,7 +146,7 @@ export default function Home({ navigation, route }) {
     axios.post(apiURL + 'artikel', {
       tipe: 'Masalah Kulit'
     }).then(res => {
-      console.log(res.data);
+
       setDataKulit(res.data);
     })
   }
@@ -76,10 +156,30 @@ export default function Home({ navigation, route }) {
       axios.post(apiURL + 'user_data', {
         id: uu.id
       }).then(res => {
-        console.log(res.data);
+        console.log(res.data)
+        if (res.data.cekin !== moment().format('YYYY-MM-DD')) {
+          setModalVisible2(true)
+        }
         storeData('user', res.data)
         setUser(res.data);
       })
+    })
+  }
+
+  const [DAILY, SETDAILY] = useState(0)
+
+  const __getPoinHarian = () => {
+    axios.post(apiURL + 'get_daily').then(res => {
+      // console.log('jadwal', res.data);
+      SETDAILY(res.data);
+      let tmp = [];
+      for (let index = 0; index < 7; index++) {
+
+        tmp.push((index + 1) * parseFloat(res.data))
+
+      }
+      console.log(tmp);
+      setREWARD(tmp);
     })
   }
 
@@ -117,13 +217,23 @@ export default function Home({ navigation, route }) {
           flexDirection: 'row',
           alignItems: 'center'
         }}>
-          <Image source={{
-            uri: user.foto_user
-          }} style={{
-            width: 40,
-            height: 40,
-            borderRadius: 20,
-          }} />
+          <TouchableOpacity onPress={() => {
+            PushNotification.localNotification({
+              /* Android Only Properties */
+              channelId: 'Youthology', // (required) channelId, if the channel doesn't exist, notification will not trigger.
+              title: 'test', // (optional)
+              message: 'data', // (required)
+
+            });
+          }}>
+            <Image source={{
+              uri: user.foto_user
+            }} style={{
+              width: 40,
+              height: 40,
+              borderRadius: 20,
+            }} />
+          </TouchableOpacity>
           <Text style={{
             left: 12,
             flex: 1,
@@ -144,7 +254,7 @@ export default function Home({ navigation, route }) {
               height: 35
             }} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => setModalVisible2(true)} style={{
+          <TouchableOpacity onPress={() => navigation.navigate('Notifikasi')} style={{
             width: 40,
             height: 40,
             borderWidth: 1,
@@ -159,6 +269,7 @@ export default function Home({ navigation, route }) {
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* SEARCH */}
+
         <View style={{
           height: 160,
           padding: 16,
@@ -174,7 +285,11 @@ export default function Home({ navigation, route }) {
             color: Color.white[900],
             marginBottom: 12
           }}>Define Beauty, Define You</Text>
-          <TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={() => {
+            navigation.navigate('Treatment', {
+              open: 'Jadwal'
+            })
+          }}>
             <View style={{
               height: 50,
               backgroundColor: Color.white[900],
@@ -192,6 +307,7 @@ export default function Home({ navigation, route }) {
             </View>
           </TouchableWithoutFeedback>
         </View>
+
         {/* FLASH SALE */}
         <View>
           <View style={{
@@ -216,7 +332,8 @@ export default function Home({ navigation, route }) {
                 marginRight: 5,
               }}>Berakhir dalam</Text>
               <CountDown
-                until={1000 * 10 + 30}
+                id={FLASHSALE}
+                until={FLASHSALE}
                 size={15}
                 showSeparator
                 separatorStyle={{
@@ -536,7 +653,10 @@ export default function Home({ navigation, route }) {
                 ...fonts.headline4,
                 color: Color.blueGray[900],
               }}>Check-in Poin</Text>
-              <TouchableOpacity onPress={() => setModalVisible(false)}>
+              <TouchableOpacity onPress={() => {
+                setModalVisible(false)
+
+              }}>
                 <Icon type='ionicon' size={24} name='close-circle' color={Color.blueGray[400]} />
               </TouchableOpacity>
 
@@ -569,7 +689,7 @@ export default function Home({ navigation, route }) {
                   marginRight: 8,
                   ...fonts.headline5,
                   color: Color.white[900],
-                }}>500 poin </Text>
+                }}>{user.poin_saya} poin </Text>
                 <MyIcon name='round-alt-arrow-right' size={15} color={Color.white[900]} />
               </View>
             </View>
@@ -624,8 +744,14 @@ export default function Home({ navigation, route }) {
 
             <MyButton title="Check-in Poin" onPress={() => {
               setModalVisible(false);
-              toast.show('Berhasil check-in harian', {
-                type: 'success'
+              axios.post(apiURL + 'daily_add', {
+                fid_user: user.id,
+                poin: DAILY
+              }).then(res => {
+                console.log(res.data);
+                toast.show('Berhasil check-in harian', {
+                  type: 'success'
+                })
               })
             }} />
 

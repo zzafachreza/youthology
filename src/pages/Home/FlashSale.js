@@ -21,11 +21,12 @@ import RenderHtml from 'react-native-render-html';
 
 export default function FlashSale({ navigation, route }) {
     const systemFonts = [fonts.body3.fontFamily, fonts.headline4.fontFamily];
+    const [isModalVisible, setModalVisible] = useState(false);
     const toast = useToast();
     const isFocus = useIsFocused();
     const [user, setUser] = useState({});
     const [dataVoucher, setDataVoucher] = useState([]);
-    const [isModalVisible, setModalVisible] = useState(false);
+
     const [pilih, setPilih] = useState({});
 
 
@@ -56,9 +57,17 @@ export default function FlashSale({ navigation, route }) {
         if (isFocus) {
             __getVouhcer();
             __GetUserProfile();
+            getFalshSale();
         }
 
     }, [isFocus]);
+
+    const [FLASHSALE, setFALSHSALE] = useState(0);
+    const getFalshSale = () => {
+        axios.post(apiURL + 'get_flash_sale').then(res => {
+            setFALSHSALE(res.data);
+        })
+    }
     return (
         <SafeAreaView style={{
             flex: 1,
@@ -77,7 +86,8 @@ export default function FlashSale({ navigation, route }) {
                     color: Color.blueGray[900]
                 }}>Berakhir dalam</Text>
                 <CountDown
-                    until={1000 * 10 + 30}
+                    id={FLASHSALE}
+                    until={FLASHSALE}
                     size={15}
                     showSeparator
                     separatorStyle={{
@@ -85,7 +95,7 @@ export default function FlashSale({ navigation, route }) {
                         color: Color.blueGray[400],
 
                     }}
-                    onFinish={() => alert('Finished')}
+
                     digitStyle={{ backgroundColor: Color.red[500] }}
                     digitTxtStyle={{ color: Color.white[900] }}
                     timeToShow={['H', 'M', 'S']}
