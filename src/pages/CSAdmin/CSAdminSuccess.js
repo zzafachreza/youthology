@@ -37,7 +37,7 @@ export default function CSAdminSuccess({ navigation, route }) {
                     marginBottom: 32,
                 }}>Terimakasih. Silahkan lanjutkan melalui pesan Whatsapp atau kamu bisa memeriksa aktivitas pesananmu melalui menu riwayat pemesanan.</Text>
 
-                <MyButton onPress={() => navigation.replace('CSAdmin')} title="Pesan Perawatan Lain" textColor={Color.primary[900]} backgroundColor={Color.white[900]} />
+                <MyButton onPress={() => navigation.navigate('CSAdmin')} title="Pesan Perawatan Lain" textColor={Color.primary[900]} backgroundColor={Color.white[900]} />
                 <MyGap jarak={12} />
                 <MyButton onPress={() => navigation.replace('MainApp')} title="Ke Halaman Utama" borderColor={Color.white[900]} borderSize={2} textColor={Color.white[900]} backgroundColor={Color.primary[900]} />
 

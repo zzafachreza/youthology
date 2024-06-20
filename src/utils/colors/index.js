@@ -67,6 +67,10 @@ export const Color = {
   yellow: {
     50: '#FEFCE8',
     500: '#EAB308',
+  },
+  socialMedia: {
+    instagram: '#c32aa3',
+    youtube: '#ff0000'
   }
 };
 

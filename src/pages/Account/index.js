@@ -169,7 +169,7 @@ export default function Account({ navigation, route }) {
                     <MyListAkun onPress={() => navigation.navigate('Tentang', user)} icon={<IconTentang />} judul='Tentang Aplikasi' desc='Informasi tentang aplikasi Youthology Clinic' />
                     <MyListAkun onPress={() => navigation.navigate('VoucherSaya', user)} icon={<IconVoucher />} judul='Voucher Saya' desc='Daftar voucher yang saya miliki' />
                     <MyListAkun onPress={() => navigation.navigate('JadwalSaya', user)} icon={<IconJadwal />} judul='Jadwal Saya' desc='Informasi tentang jadwal janji temu' />
-                    <MyListAkun onPress={() => navigation.navigate('Bagikan', user)} icon={<IconShare />} judul='Bagikan & Ikuti' desc='Bagikan dan ikuti instagram Youthology Clinic' />
+                    <MyListAkun onPress={() => navigation.navigate('Bagikan', user)} icon={<IconShare />} judul='Ikuti Kami' desc='Ikuti instagram dan youtube Youthology Clinic dan dapatkan poin' />
                     <MyListAkun onPress={Keluar} icon={<IconKeluar />} color={Color.red[500]} judul='Keluar' desc='Keluar dari akun Anda' border={0} />
 
 

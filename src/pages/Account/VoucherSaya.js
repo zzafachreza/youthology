@@ -151,16 +151,18 @@ export default function VoucherSaya({ navigation, route }) {
             {!loading &&
 
                 <View style={{
+                    flex: 1,
                     padding: 16
                 }}>
 
-                    <FlatList ListEmptyComponent={<MyEmpty />} data={pilih > 0 ? data.filter(i => i.status !== 'Menunggu Persetujuan') : data.filter(i => i.status == 'Menunggu Persetujuan')} renderItem={(({ item, index }) => {
+                    <FlatList showsVerticalScrollIndicator={false} maxToRenderPerBatch={2} ListEmptyComponent={<MyEmpty />} data={pilih > 0 ? data.filter(i => i.status !== 'Menunggu Persetujuan') : data.filter(i => i.status == 'Menunggu Persetujuan')} renderItem={(({ item, index }) => {
                         return (
 
                             <TouchableOpacity onPress={() => navigation.navigate('VoucherDetail', item)} style={{
                                 backgroundColor: Color.primary[900],
                                 borderWidth: 1,
                                 borderRadius: 12,
+                                marginBottom: 12,
                                 borderColor: Color.blueGray[100]
                             }}>
                                 <View style={{
@@ -211,7 +213,7 @@ export default function VoucherSaya({ navigation, route }) {
                             </TouchableOpacity>
                         )
                     })} />
-
+                    {/* <MyGap jarak={200} /> */}
                 </View>
 
 

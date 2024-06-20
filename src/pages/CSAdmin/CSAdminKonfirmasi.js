@@ -432,10 +432,15 @@ export default function CSAdminKonfirmasi({ navigation, route }) {
                             <MyButton onPress={
                                 () => {
                                     setModalVisible(false);
-                                    toast.show('Pesanan Telah dibatalkan\nSilahkan pilih perawatan lain', {
-                                        type: 'error'
-                                    });
-                                    navigation.repalce('MainApp')
+                                    setTimeout(() => {
+                                        toast.show('Pesanan Telah dibatalkan\nSilahkan pilih perawatan lain', {
+                                            type: 'error'
+                                        });
+                                        navigation.reset({
+                                            index: 0,
+                                            routes: [{ name: 'CSAdmin' }]
+                                        })
+                                    }, 300)
                                 }
                             } backgroundColor={Color.white} borderSize={2} textColor={Color.primary[900]} title="Tidak, Batalkan" />
 

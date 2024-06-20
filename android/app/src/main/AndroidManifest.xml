@@ -27,7 +27,7 @@
       android:theme="@style/AppTheme">
 
        <!-- notifikasi -->
-
+<meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_notification" />
 
          <!-- Change the value to true to enable pop-up for in foreground on receiving remote notifications (for prevent duplicating while showing local notifications set this to false) -->
         <meta-data  android:exported="true"  android:name="com.dieam.reactnativepushnotification.notification_foreground"

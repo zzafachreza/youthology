@@ -73,7 +73,7 @@ export default function CSAdminJadwal({ navigation, route }) {
                     <Calendar
                         scrollable
                         maxDate={kirim.tanggal_janji_max}
-                        minDate={kirim.tanggal_janji}
+                        minDate={moment().add(7, 'day').format('YYYY-MM-DD')}
                         disableAllTouchEventsForDisabledDays={true}
                         theme={{
 

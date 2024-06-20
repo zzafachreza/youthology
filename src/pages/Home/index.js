@@ -87,7 +87,9 @@ export default function Home({ navigation, route }) {
 
       PushNotification.localNotification({
         /* Android Only Properties */
-        channelId: 'YouthologyID', // (required) channelId, if the channel doesn't exist, notification will not trigger.
+        priority: 'high',
+        importance: Importance.HIGH,
+        channelId: 'YouthologyIDBCK', // (required) channelId, if the channel doesn't exist, notification will not trigger.
         title: obj.title, // (optional)
         message: obj.body, // (required)
 
@@ -451,7 +453,10 @@ export default function Home({ navigation, route }) {
                   borderRadius: 12,
                   marginRight: 8,
                   overflow: 'hidden',
+                  position: 'relative'
                 }}>
+
+
                   <View style={{
                     backgroundColor: Color.white[900],
                     height: 80,
@@ -497,7 +502,10 @@ export default function Home({ navigation, route }) {
                       }}>{moment(moment().format('YYYY-MM-DD ' + item.jam_janji)).format('HH:mm')} - {moment(moment().format('YYYY-MM-DD ' + item.jam_janji)).add(1, 'hours').format('HH:mm')}</Text>
 
                     </View>
+
                   </View>
+
+
                 </View>
               </TouchableWithoutFeedback>
             )

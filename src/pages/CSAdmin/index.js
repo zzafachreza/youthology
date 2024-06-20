@@ -11,6 +11,8 @@ import { maskJs, maskCurrency } from 'mask-js';
 import { useToast } from "react-native-toast-notifications";
 import axios from 'axios';
 import Spinner from 'react-native-spinkit';
+import { Icon } from 'react-native-elements';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function CSAdmin({ navigation, route }) {
 
@@ -25,8 +27,8 @@ export default function CSAdmin({ navigation, route }) {
         jenis_kelamin: 'Perempuan',
         rekam_medis: '',
         alamat: '',
-        tanggal_janji: moment().add(8, 'day').format('YYYY-MM-DD'),
-        tanggal_janji_max: moment().add(38, 'day').format('YYYY-MM-DD'),
+        tanggal_janji: moment().add(7, 'day').format('YYYY-MM-DD'),
+        tanggal_janji_max: moment().add(37, 'day').format('YYYY-MM-DD'),
         jam_janji: ''
     });
 
@@ -62,41 +64,46 @@ export default function CSAdmin({ navigation, route }) {
     }
 
     const [user, setUser] = useState({})
+    const isFocus = useIsFocused();
     useEffect(() => {
-        getData('user').then(res => {
 
-            setUser(res);
-            // setKirim({
-            //     ...kirim,
-            //     fid_user: res.id,
-            // })
-            setLoading(true);
-            axios.post(apiURL + 'perawatan').then(per => {
+        if (isFocus) {
 
-                setPerawatan(per.data);
-                axios.post(apiURL + 'dokter').then(dok => {
-                    console.log(dok.data)
-                    setDokter(dok.data);
-                    setKirim({
-                        ...kirim,
-                        fid_user: res.id,
-                        fid_perawatan: per.data[0].value,
-                        fid_dokter: dok.data[0].value,
-                        dokter: dok.data[0].label,
-                        perawatan: per.data[0].label,
+            getData('user').then(res => {
 
+                setUser(res);
+                // setKirim({
+                //     ...kirim,
+                //     fid_user: res.id,
+                // })
+                setLoading(true);
+                axios.post(apiURL + 'perawatan').then(per => {
+
+                    setPerawatan(per.data);
+                    axios.post(apiURL + 'dokter').then(dok => {
+                        console.log(dok.data)
+                        setDokter(dok.data);
+                        setKirim({
+                            ...kirim,
+                            fid_user: res.id,
+                            fid_perawatan: per.data[0].value,
+                            fid_dokter: dok.data[0].value,
+                            dokter: dok.data[0].label,
+                            perawatan: per.data[0].label,
+
+                        })
+                    }).finally(() => {
+                        setLoading(false);
                     })
-                }).finally(() => {
-                    setLoading(false);
+
+
+
                 })
+            });
+        }
 
 
-
-            })
-        });
-
-
-    }, [])
+    }, [isFocus])
     return (
         <SafeAreaView style={{
             flex: 1,
@@ -146,6 +153,37 @@ export default function CSAdmin({ navigation, route }) {
                 <View style={{
                     padding: 16
                 }}>
+                    <TouchableOpacity onPress={() => {
+                        try {
+                            setLoading(true)
+                            setKirim({
+                                ...kirim,
+                                nama_lengkap: user.nama_lengkap,
+                                telepon: user.telepon,
+                                tanggal_lahir: user.tanggal_lahir,
+                                rekam_medis: user.rekam_medis,
+                                alamat: user.alamat
+
+                            })
+                        } catch (error) {
+
+                        } finally {
+                            setTimeout(() => {
+                                setLoading(false)
+                            }, 1000);
+                        }
+                    }} style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        alignSelf: 'flex-end'
+                    }}>
+                        <Icon type='ionicon' name='copy-outline' color={Color.primary[900]} size={20} />
+                        <Text style={{
+                            ...fonts.body3,
+                            marginLeft: 10,
+                            color: Color.primary[900]
+                        }}>Gunakan Informasi Akun</Text>
+                    </TouchableOpacity>
                     {/* Nama Lengkap */}
                     <View>
                         <Text style={{
@@ -319,7 +357,7 @@ export default function CSAdmin({ navigation, route }) {
                             ...kirim,
                             alamat: x
                         })
-                    }} label="Alamat" placeholder="Ketikkan alamat domisili" />
+                    }} label="Alamat" value={kirim.alamat} placeholder="Ketikkan alamat domisili" />
                     <MyGap jarak={24} />
                     <MyButton title="Pilih Tanggal & Jam" onPress={sendServer} />
 

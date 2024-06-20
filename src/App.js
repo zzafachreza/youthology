@@ -46,14 +46,14 @@ export default function App() {
     onNotification: function (notification) {
       console.log('NOTIFICATION:', notification);
 
-      if (notification.title == 'Klaim Voucher') {
-        navigationRef.current?.navigate('VoucherSaya')
-      } else if (notification.title == 'Jadwal Perawatan') {
-        navigationRef.current?.navigate('JadwalSaya');
+      // if (notification.title == 'Klaim Voucher') {
+      //   navigationRef.current?.navigate('VoucherSaya')
+      // } else if (notification.title == 'Jadwal Perawatan') {
+      //   navigationRef.current?.navigate('JadwalSaya');
 
-      } else {
-        navigationRef.current?.navigate('Notifikasi');
-      }
+      // } else {
+      //   navigationRef.current?.navigate('Notifikasi');
+      // }
 
       // getPushNotifikasi(notification.title, notification.message);
     },

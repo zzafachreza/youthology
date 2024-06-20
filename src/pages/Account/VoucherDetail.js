@@ -18,12 +18,30 @@ import axios from 'axios';
 import { useIsFocused } from '@react-navigation/native';
 import DashedLine from 'react-native-dashed-line';
 import RenderHtml from 'react-native-render-html';
+import FastImage from 'react-native-fast-image'
+import ImageView from 'react-native-image-viewing';
+
 export default function VoucherDetail({
     navigation, route
 }) {
 
     const item = route.params;
-    const [loading, setLoaing] = useState(true)
+    const [loading, setLoaing] = useState(true);
+
+    // IMAGE VIEW ZOOM
+    const [gambarPilih, setGambarPilih] = useState([
+        {
+            uri: "https://images.unsplash.com/photo-1571501679680-de32f1e7aad4",
+        },
+        {
+            uri: "https://images.unsplash.com/photo-1573273787173-0eb81a833b34",
+        },
+        {
+            uri: "https://images.unsplash.com/photo-1569569970363-df7b6160d111",
+        },
+    ])
+    const [visible, setIsVisible] = useState(false);
+
     return (
         <SafeAreaView style={{
             flex: 1,
@@ -124,18 +142,35 @@ export default function VoucherDetail({
                     }}>{item.status}</Text>
                 </View>
                 {/* IMAGE */}
-                <Image onLoad={() => setLoaing(false)} source={{
-                    uri: item.image
-                }} style={{
-                    marginTop: 12,
-                    width: 200,
-                    alignSelf: 'center',
-                    height: 300,
-                    resizeMode: 'contain'
-                }} />
 
-                {loading && <MyLoading />}
+
+                <FastImage
+                    onLoad={() => setLoaing(false)}
+                    style={{
+                        marginTop: 12,
+                        width: '100%',
+                        alignSelf: 'center',
+                        height: 300,
+                        resizeMode: 'contain'
+                    }}
+                    source={{
+                        uri: item.image,
+                        priority: FastImage.priority.normal,
+                    }}
+                    resizeMode={FastImage.resizeMode.contain}
+                />
+
+
+
+
+
+                {loading && item.tipe == 'Flash Sale' && <MyLoading />}
+
             </View>
+
+
+            {/* // IMAGE VIEW ZOOM */}
+
 
         </SafeAreaView>
     )

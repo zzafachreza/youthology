@@ -10,6 +10,7 @@ import DatePicker from 'react-native-datepicker'
 import { maskJs, maskCurrency } from 'mask-js';
 import { useToast } from "react-native-toast-notifications";
 import axios from 'axios';
+import { Icon } from 'react-native-elements';
 export default function Bagikan({ navigation, route }) {
     return (
         <SafeAreaView style={{
@@ -17,7 +18,7 @@ export default function Bagikan({ navigation, route }) {
             backgroundColor: Color.white[900],
         }}>
             <StatusBar backgroundColor={Color.white[900]} barStyle="dark-content" />
-            <MyHeader title="Bagikan & Ikuti" />
+            <MyHeader title="Ikuti Kami" />
             <View style={{
                 flex: 1,
                 padding: 16
@@ -36,7 +37,7 @@ export default function Bagikan({ navigation, route }) {
 
                 </View>
                 <TouchableOpacity
-                    onPress={() => Linking.openURL('https://www.instagram.com/youthologyclinic/?')}
+                    onPress={() => Linking.openURL('https://tr.ee/ca5OvMegvx')}
                     style={
                         {
                             alignSelf: 'center',
@@ -51,16 +52,43 @@ export default function Bagikan({ navigation, route }) {
                         }
                     }
                 >
-                    <MyIcon name='share' color={Color.white[900]} size={24} />
+                    <Icon type='ionicon' name='thumbs-up' color={Color.white[900]} size={20} />
                     <Text
                         style={{
                             left: 5,
                             ...fonts.headline5,
                             color: Color.white[900]
                         }}>
-                        Bagikan
+                        Ikuti Kami
                     </Text>
                 </TouchableOpacity>
+                {/* <MyGap jarak={10} />
+                <TouchableOpacity
+                    onPress={() => Linking.openURL('https://tr.ee/ca5OvMegvx')}
+                    style={
+                        {
+                            alignSelf: 'center',
+                            width: 340,
+                            height: 42,
+                            borderRadius: 12,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            backgroundColor: Color.socialMedia.youtube,
+                            flexDirection: 'row',
+
+                        }
+                    }
+                >
+                    <Icon type='ionicon' name='logo-youtube' color={Color.white[900]} size={20} />
+                    <Text
+                        style={{
+                            left: 5,
+                            ...fonts.headline5,
+                            color: Color.white[900]
+                        }}>
+                        Youtube
+                    </Text>
+                </TouchableOpacity> */}
             </View>
         </SafeAreaView>
     )

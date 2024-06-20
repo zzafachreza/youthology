@@ -9,6 +9,8 @@ import { Icon } from 'react-native-elements';
 import axios from 'axios';
 import RenderHtml from 'react-native-render-html';
 import { useIsFocused } from '@react-navigation/native';
+import { Swipeable } from 'react-native-gesture-handler';
+import { useToast } from 'react-native-toast-notifications';
 
 export default function Notifikasi({ navigation, route }) {
     const [pilih, setPilih] = useState(0);
@@ -17,14 +19,15 @@ export default function Notifikasi({ navigation, route }) {
     const isFocus = useIsFocused();
     const [data, setData] = useState([]);
     const [tmp, setTmp] = useState([]);
-    const [cek, setCek] = useState('Semua')
+    const [cek, setCek] = useState('Semua');
+    const toast = useToast();
 
     useEffect(() => {
         if (isFocus) {
-            __getKlaim();
+            __getNotifikasi();
         }
     }, [isFocus]);
-    const __getKlaim = () => {
+    const __getNotifikasi = () => {
         setLoading(true);
         getData('user').then(uu => {
             axios.post(apiURL + 'notifikasi', {
@@ -81,7 +84,7 @@ export default function Notifikasi({ navigation, route }) {
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => {
                         setCek('Flash Sale');
-                        setData(data.filter(i => i.tipe = 'Flash Sale'))
+                        setData(data.filter(i => i.tipe == 'Flash Sale'))
                     }} style={{
                         height: 35,
                         justifyContent: 'center',
@@ -99,7 +102,7 @@ export default function Notifikasi({ navigation, route }) {
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => {
                         setCek('Promo');
-                        setData(data.filter(i => i.tipe = 'Promo'))
+                        setData(data.filter(i => i.tipe == 'Promo'))
                     }} style={{
                         height: 35,
                         justifyContent: 'center',
@@ -175,44 +178,87 @@ export default function Notifikasi({ navigation, route }) {
                     }} showsVerticalScrollIndicator={false} data={data} renderItem={(({ item, index }) => {
                         return (
 
-                            <View style={{
-                                borderWidth: 1,
-                                padding: 12,
-                                marginVertical: 8,
-                                borderRadius: 12,
-                                borderColor: Color.blueGray[100]
+                            <Swipeable renderRightActions={() => {
+                                return (
+                                    <View style={{
+                                        width: 100,
+                                        padding: 10,
+                                        backgroundColor: Color.blueGray[100]
+                                    }}>
+                                        <TouchableOpacity onPress={() => {
+                                            console.log(item.id)
+                                            axios.post(apiURL + 'notifikasi_delete', {
+                                                id: item.id
+                                            }).then(res => {
+                                                console.log(res.data)
+                                                if (res.data.status == 200) {
+                                                    toast.show(res.data.message, {
+                                                        type: 'success'
+                                                    });
+                                                    let tmp = [...data];
+                                                    tmp.splice(index, 1);
+                                                    setData(tmp);
+                                                    // __getNotifikasi();
+                                                }
+                                            })
+                                        }} style={{
+                                            width: 80,
+                                            flex: 1,
+                                            justifyContent: 'center',
+                                            alignItems: 'center'
+                                        }}>
+                                            <Icon type='ionicon' size={30} name='trash-outline' color={Color.red[500]} />
+                                        </TouchableOpacity>
+                                    </View>
+                                )
                             }}>
-                                <View style={{
-                                    flexDirection: 'row',
-                                    alignItems: 'center'
+                                <TouchableWithoutFeedback onPress={() => {
+                                    if (item.judul == 'Klaim Voucher') {
+                                        navigation.navigate('VoucherSaya')
+                                    } else if (item.judul == 'Jadwal Perawatan') {
+                                        navigation.navigate('JadwalSaya')
+                                    }
                                 }}>
-                                    <Text style={{
-                                        flex: 1,
-                                        ...fonts.headline4,
-                                        color: Color.blueGray[900]
-                                    }}>{item.judul}</Text>
-                                    <Text style={{
-                                        ...fonts.caption1,
-                                        color: Color.blueGray[400]
-                                    }}>{moment(item.tanggal + ' ' + item.jam).format('HH:mm')}</Text>
-                                </View>
-                                <Text style={{
-                                    ...fonts.body3,
-                                    color: Color.blueGray[900]
-                                }}>{item.keterangan}</Text>
+                                    <View style={{
+                                        backgroundColor: Color.white[900],
+                                        borderBottomWidth: 1,
+                                        padding: 12,
+                                        borderColor: Color.blueGray[100]
+                                    }}>
+                                        <View style={{
+                                            flexDirection: 'row',
+                                            alignItems: 'center'
+                                        }}>
+                                            <Text style={{
+                                                flex: 1,
+                                                ...fonts.headline4,
+                                                color: Color.blueGray[900]
+                                            }}>{item.judul}</Text>
+                                            <Text style={{
+                                                ...fonts.caption1,
+                                                color: Color.blueGray[400]
+                                            }}>{moment(item.tanggal + ' ' + item.jam).format('HH:mm')}</Text>
+                                        </View>
+                                        <Text style={{
+                                            ...fonts.body3,
+                                            color: Color.blueGray[900]
+                                        }}>{item.keterangan}</Text>
 
-                                <Text style={{
-                                    // borderWidth: 1,
-                                    width: 100,
-                                    marginTop: 8,
-                                    borderRadius: 100,
-                                    textAlign: 'center',
-                                    backgroundColor: item.tipe == 'Flash Sale' ? Color.red[500] : item.tipe == 'Promo' ? Color.tealGreen[500] : Color.primary[900],
-                                    ...fonts.caption1,
-                                    color: Color.white[900]
-                                }}>{item.tipe}</Text>
+                                        <Text style={{
+                                            // borderWidth: 1,
+                                            width: 100,
+                                            marginTop: 8,
+                                            borderRadius: 100,
+                                            textAlign: 'center',
+                                            backgroundColor: item.tipe == 'Flash Sale' ? Color.red[500] : item.tipe == 'Promo' ? Color.tealGreen[500] : Color.primary[900],
+                                            ...fonts.caption1,
+                                            color: Color.white[900]
+                                        }}>{item.tipe}</Text>
 
-                            </View>
+                                    </View>
+                                </TouchableWithoutFeedback>
+                            </Swipeable>
+
                         )
                     })} />
                     }

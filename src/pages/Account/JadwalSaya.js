@@ -31,6 +31,7 @@ export default function JadwalSaya({ navigation, route }) {
             }).then(res => {
                 console.log('jadwal', res.data);
                 setDataJadwal(res.data);
+                setTmp(res.data)
                 setLoading(false);
             })
         }).finally(() => {
