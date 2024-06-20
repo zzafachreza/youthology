@@ -1,13 +1,15 @@
 import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import { Color, fonts } from '../../utils'
-import { MyButton, MyGap, MyHeader, MyInput } from '../../components'
+import { MyButton, MyGap, MyHeader, MyInput, MyLoading } from '../../components'
 import { useToast } from 'react-native-toast-notifications';
 import axios from 'axios';
 import { apiURL } from '../../utils/localStorage';
+import Spinner from 'react-native-spinkit';
 
 export default function Lupa({ navigation, route }) {
     const [email, setEmail] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const toast = useToast();
     const sendServer = () => {
@@ -16,6 +18,7 @@ export default function Lupa({ navigation, route }) {
                 type: 'danger'
             })
         } else {
+            setLoading(true);
             axios.post(apiURL + 'lupa', {
                 email: email
             }).then(res => {
@@ -32,6 +35,8 @@ export default function Lupa({ navigation, route }) {
                         type: 'danger'
                     })
                 }
+            }).finally(() => {
+                setLoading(false);
             })
         }
     }
@@ -42,6 +47,7 @@ export default function Lupa({ navigation, route }) {
         }}>
             <StatusBar backgroundColor={Color.white[900]} barStyle="dark-content" />
             <MyHeader title="Lupa Kata Sandi" />
+
             <ScrollView showsVerticalScrollIndicator={false} style={{
                 padding: 16,
             }}>
@@ -54,7 +60,8 @@ export default function Lupa({ navigation, route }) {
                     'Masukan email' />
 
                 <MyGap jarak={20} />
-                <MyButton onPress={sendServer} title="Kirim" />
+                {!loading && <MyButton onPress={sendServer} title="Kirim" />}
+                {loading && <MyLoading />}
             </ScrollView>
         </SafeAreaView>
     )

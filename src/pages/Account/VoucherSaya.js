@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Color, fonts, windowWidth } from '../../utils'
 import { StatusBar } from 'react-native'
 import { apiURL, getData } from '../../utils/localStorage';
-import { MyGap, MyHeader, MyHeaderPoint, MyIcon } from '../../components';
+import { MyEmpty, MyGap, MyHeader, MyHeaderPoint, MyIcon, MyLoading } from '../../components';
 import moment from 'moment';
 import { Icon } from 'react-native-elements';
 import axios from 'axios';
@@ -13,7 +13,7 @@ import { useIsFocused } from '@react-navigation/native';
 export default function VoucherSaya({ navigation, route }) {
     const [pilih, setPilih] = useState(0);
 
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const isFocus = useIsFocused();
     const [data, setData] = useState([]);
     const [tmp, setTmp] = useState([]);
@@ -24,13 +24,15 @@ export default function VoucherSaya({ navigation, route }) {
         }
     }, [isFocus]);
     const __getKlaim = () => {
+        setLoading(true);
         getData('user').then(uu => {
             axios.post(apiURL + 'klaim', {
                 fid_user: uu.id
             }).then(res => {
                 console.log('jadwal', res.data);
                 setData(res.data);
-                setTmp(res.data)
+                setTmp(res.data);
+                setLoading(false);
             })
         })
     }
@@ -152,7 +154,7 @@ export default function VoucherSaya({ navigation, route }) {
                     padding: 16
                 }}>
 
-                    <FlatList data={pilih > 0 ? data.filter(i => i.status !== 'Menunggu Persetujuan') : data.filter(i => i.status == 'Menunggu Persetujuan')} renderItem={(({ item, index }) => {
+                    <FlatList ListEmptyComponent={<MyEmpty />} data={pilih > 0 ? data.filter(i => i.status !== 'Menunggu Persetujuan') : data.filter(i => i.status == 'Menunggu Persetujuan')} renderItem={(({ item, index }) => {
                         return (
 
                             <TouchableOpacity onPress={() => navigation.navigate('VoucherDetail', item)} style={{
@@ -214,6 +216,8 @@ export default function VoucherSaya({ navigation, route }) {
 
 
             }
+
+            {loading && <MyLoading />}
         </SafeAreaView>
     )
 }

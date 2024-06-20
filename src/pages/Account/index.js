@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Color, fonts } from '../../utils'
 import { StatusBar } from 'react-native'
 import { apiURL, getData, storeData } from '../../utils/localStorage';
-import { MyIcon } from '../../components';
+import { MyHeaderPoint, MyIcon } from '../../components';
 import { ImageBackground } from 'react-native';
 import moment from 'moment';
 import IconEdit from '../../assets/IconEdit.svg';
@@ -11,10 +11,9 @@ import IconTentang from '../../assets/IconTentang.svg';
 import IconVoucher from '../../assets/IconVoucher.svg';
 import IconShare from '../../assets/IconShare.svg';
 import IconKeluar from '../../assets/IconKeluar.svg';
+import IconJadwal from '../../assets/IconJadwal.svg';
 import { useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
-
-
 export default function Account({ navigation, route }) {
     const [user, setUser] = useState({});
     const isFocus = useIsFocused();
@@ -81,30 +80,7 @@ export default function Account({ navigation, route }) {
             flex: 1,
             backgroundColor: Color.white[900]
         }}>
-            <View style={{
-                height: 80,
-                backgroundColor: Color.primary[900],
-                flexDirection: 'row',
-                alignItems: 'center',
-                padding: 16
-            }}>
-                <Text style={{
-                    flex: 1,
-                    ...fonts.headline3,
-                    color: Color.white[900]
-                }}>Akun Saya</Text>
-                <TouchableOpacity style={{
-                    width: 40,
-                    height: 40,
-                    borderWidth: 1,
-                    borderRadius: 20,
-                    borderColor: '#FFFFFF1F',
-                    justifyContent: 'center',
-                    alignItems: 'center'
-                }}>
-                    <MyIcon name='bell' size={24} color={Color.white[900]} />
-                </TouchableOpacity>
-            </View>
+            <MyHeaderPoint title='Akun Saya' />
 
             <ScrollView>
                 <View style={{
@@ -149,24 +125,28 @@ export default function Account({ navigation, route }) {
                                 }}>Member Since {moment(user.tanggal_daftar).format('DD/MM/YYYY')}</Text>
                             </View>
                         </View>
-                        <View style={{
-                            marginTop: 16,
-                            height: 35,
-                            paddingHorizontal: 10,
-                            borderWidth: 1,
-                            borderColor: user.member == 'Silver' ? Color.primary[900] : Color.white[900],
-                            borderRadius: 100,
-                            flexDirection: 'row',
-                            alignItems: 'center'
-                        }}>
-                            <MyIcon size={17} name='gift' color={user.member == 'Silver' ? Color.primary[900] : Color.white[900]} />
-                            <Text style={{
-                                marginHorizontal: 8,
-                                ...fonts.subheadline3,
-                                color: user.member == 'Silver' ? Color.primary[900] : Color.white[900]
-                            }}>{user.member}</Text>
-                            <MyIcon size={17} name='round-alt-arrow-right' color={user.member == 'Silver' ? Color.primary[900] : Color.white[900]} />
-                        </View>
+
+                        <TouchableWithoutFeedback onPress={() => navigation.navigate('Member')}>
+                            <View style={{
+                                marginTop: 16,
+                                height: 35,
+                                paddingHorizontal: 10,
+                                borderWidth: 1,
+                                borderColor: user.member == 'Silver' ? Color.primary[900] : Color.white[900],
+                                borderRadius: 100,
+                                flexDirection: 'row',
+                                alignItems: 'center'
+                            }}>
+                                <MyIcon size={17} name='gift' color={user.member == 'Silver' ? Color.primary[900] : Color.white[900]} />
+                                <Text style={{
+                                    marginHorizontal: 8,
+                                    ...fonts.subheadline3,
+                                    color: user.member == 'Silver' ? Color.primary[900] : Color.white[900]
+                                }}>{user.member}</Text>
+                                <MyIcon size={17} name='round-alt-arrow-right' color={user.member == 'Silver' ? Color.primary[900] : Color.white[900]} />
+                            </View>
+                        </TouchableWithoutFeedback>
+
 
                     </ImageBackground>
                 </View>
@@ -188,6 +168,7 @@ export default function Account({ navigation, route }) {
                     <MyListAkun onPress={() => navigation.navigate('EditAccount', user)} />
                     <MyListAkun onPress={() => navigation.navigate('Tentang', user)} icon={<IconTentang />} judul='Tentang Aplikasi' desc='Informasi tentang aplikasi Youthology Clinic' />
                     <MyListAkun onPress={() => navigation.navigate('VoucherSaya', user)} icon={<IconVoucher />} judul='Voucher Saya' desc='Daftar voucher yang saya miliki' />
+                    <MyListAkun onPress={() => navigation.navigate('JadwalSaya', user)} icon={<IconJadwal />} judul='Jadwal Saya' desc='Informasi tentang jadwal janji temu' />
                     <MyListAkun onPress={() => navigation.navigate('Bagikan', user)} icon={<IconShare />} judul='Bagikan & Ikuti' desc='Bagikan dan ikuti instagram Youthology Clinic' />
                     <MyListAkun onPress={Keluar} icon={<IconKeluar />} color={Color.red[500]} judul='Keluar' desc='Keluar dari akun Anda' border={0} />
 

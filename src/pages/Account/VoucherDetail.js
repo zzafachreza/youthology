@@ -7,7 +7,7 @@ import KulitBerjerawat from '../../assets/KulitBerjerawat.svg'
 import KulitKusam from '../../assets/KulitKusam.svg'
 import KulitKendur from '../../assets/KulitKendur.svg'
 import FlekHitam from '../../assets/FlekHitam.svg'
-import { MyButton, MyGap, MyHeader, MyIcon } from '../../components';
+import { MyButton, MyGap, MyHeader, MyIcon, MyLoading } from '../../components';
 import CountDown from 'react-native-countdown-component';
 import MyCarouser from '../../components/MyCarouser';
 import moment from 'moment';
@@ -23,6 +23,7 @@ export default function VoucherDetail({
 }) {
 
     const item = route.params;
+    const [loading, setLoaing] = useState(true)
     return (
         <SafeAreaView style={{
             flex: 1,
@@ -123,7 +124,7 @@ export default function VoucherDetail({
                     }}>{item.status}</Text>
                 </View>
                 {/* IMAGE */}
-                <Image source={{
+                <Image onLoad={() => setLoaing(false)} source={{
                     uri: item.image
                 }} style={{
                     marginTop: 12,
@@ -132,6 +133,8 @@ export default function VoucherDetail({
                     height: 300,
                     resizeMode: 'contain'
                 }} />
+
+                {loading && <MyLoading />}
             </View>
 
         </SafeAreaView>

@@ -7,7 +7,7 @@ import KulitBerjerawat from '../../assets/KulitBerjerawat.svg'
 import KulitKusam from '../../assets/KulitKusam.svg'
 import KulitKendur from '../../assets/KulitKendur.svg'
 import FlekHitam from '../../assets/FlekHitam.svg'
-import { MyButton, MyGap, MyHeader, MyIcon } from '../../components';
+import { MyButton, MyEmpty, MyGap, MyHeader, MyIcon, MyLoading } from '../../components';
 import CountDown from 'react-native-countdown-component';
 import MyCarouser from '../../components/MyCarouser';
 import moment from 'moment';
@@ -20,6 +20,8 @@ import DashedLine from 'react-native-dashed-line';
 import RenderHtml from 'react-native-render-html';
 
 export default function FlashSale({ navigation, route }) {
+
+    const ITEM = route.params;
     const systemFonts = [fonts.body3.fontFamily, fonts.headline4.fontFamily];
     const [isModalVisible, setModalVisible] = useState(false);
     const toast = useToast();
@@ -29,13 +31,15 @@ export default function FlashSale({ navigation, route }) {
 
     const [pilih, setPilih] = useState({});
 
+    const [loading, setLoading] = useState(true);
 
     const __getVouhcer = () => {
 
         axios.post(apiURL + 'voucher', {
-            tipe: 'Flash Sale'
+            tipe: ITEM.tipe,
         }).then(res => {
             console.log(res.data);
+            setLoading(false);
             setDataVoucher(res.data)
 
         })
@@ -73,126 +77,156 @@ export default function FlashSale({ navigation, route }) {
             flex: 1,
             backgroundColor: Color.white[900]
         }}>
-            <MyHeader title="Flash Sale" />
-            <MyCarouser />
+            <MyHeader title={ITEM.tipe} />
             <View style={{
                 padding: 16,
-                flexDirection: 'row',
-                alignItems: 'center'
             }}>
-                <Text style={{
-                    flex: 1,
-                    ...fonts.headline4,
-                    color: Color.blueGray[900]
-                }}>Berakhir dalam</Text>
-                <CountDown
-                    id={FLASHSALE}
-                    until={FLASHSALE}
-                    size={15}
-                    showSeparator
-                    separatorStyle={{
-                        marginHorizontal: 4,
-                        color: Color.blueGray[400],
-
-                    }}
-
-                    digitStyle={{ backgroundColor: Color.red[500] }}
-                    digitTxtStyle={{ color: Color.white[900] }}
-                    timeToShow={['H', 'M', 'S']}
-                    timeLabels={{ h: null, m: null, s: null }}
-                />
-            </View>
-            <View style={{
-                flex: 1,
-                padding: 16
-            }}>
-                <FlatList data={dataVoucher} renderItem={({ item, index }) => {
-                    return (
-                        <TouchableOpacity onPress={() => {
-                            setPilih(item);
-                            setModalVisible(true);
-                        }} style={{
-                            backgroundColor: Color.white[900],
-
-                            borderRadius: 12,
-                            flexDirection: 'row',
-                            overflow: 'hidden',
-                            marginBottom: 12,
-                        }}>
-                            <Image style={{
-                                height: '100%',
-                                width: 45,
-                            }} source={item.jenis == 'Discount' ? require('../../assets/dics.png') : require('../../assets/cash.png')} />
-                            <View style={{
-                                flex: 1,
-                                padding: 12,
-                                borderTopWidth: 1,
-                                borderWidth: 1,
-                                borderBottomWidth: 1,
-                                borderColor: Color.blueGray[100],
-                                borderTopRightRadius: 12,
-                                borderBottomRightRadius: 12,
-                            }}>
-                                <Text style={{
-                                    ...fonts.headline5,
-                                    color: Color.blueGray[900],
-                                }}>{item.nama_voucher}</Text>
-                                <Text style={{
-                                    ...fonts.body3,
-                                    color: Color.blueGray[400],
-                                    marginBottom: 8,
-                                }}>{item.informasi}</Text>
-
-                                <View style={{
-
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    marginBottom: 8,
-
-
-
-                                }}>
-                                    <MyIcon name='history-3' size={16} color={Color.blueGray[900]} />
-                                    <Text style={{
-                                        left: 8,
-                                        flex: 1,
-                                        ...fonts.caption1,
-                                        color: Color.blueGray[900]
-                                    }}>Berlaku sampai {moment(item.expired).format('DD MMMM YYYY')}</Text>
-                                </View>
-
-                                <DashedLine dashLength={8} dashThickness={1} dashGap={5} dashColor={Color.blueGray[200]} dashStyle={{ borderRadius: 2 }} />
-                                <View style={{
-
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    marginTop: 8,
-
-
-
-                                }}>
-                                    <Image source={require('../../assets/poin.png')} style={{
-                                        width: 24,
-                                        height: 24,
-                                    }} />
-                                    <Text style={{
-                                        left: 8,
-                                        flex: 1,
-                                        ...fonts.headline5,
-                                        color: Color.blueGray[900]
-                                    }}>{item.poin} poin</Text>
-                                    <Text style={{
-                                        // flex: 1,
-                                        ...fonts.body3,
-                                        color: Color.blueGray[900]
-                                    }}>Tersisa {item.jumlah} voucher</Text>
-
-                                </View>
-                            </View>
-                        </TouchableOpacity>
-                    )
+                <Image source={{
+                    uri: ITEM.image
+                }} style={{
+                    resizeMode: 'cover',
+                    height: 120,
+                    width: '100%',
+                    borderRadius: 10,
+                    alignSelf: 'center'
                 }} />
             </View>
+            {
+                ITEM.tipe == 'Flash Sale' && FLASHSALE > 0 &&
+
+                <View style={{
+                    padding: 16,
+                    flexDirection: 'row',
+                    alignItems: 'center'
+                }}>
+                    <Text style={{
+                        flex: 1,
+                        ...fonts.headline4,
+                        color: Color.blueGray[900]
+                    }}>Berakhir dalam</Text>
+                    <CountDown
+                        id={'ID' + FLASHSALE}
+                        until={FLASHSALE}
+                        size={15}
+                        showSeparator
+                        separatorStyle={{
+                            marginHorizontal: 4,
+                            color: Color.blueGray[400],
+
+                        }}
+
+                        digitStyle={{ backgroundColor: Color.red[500] }}
+                        digitTxtStyle={{ color: Color.white[900] }}
+                        timeToShow={['H', 'M', 'S']}
+                        timeLabels={{ h: null, m: null, s: null }}
+                    />
+                </View>
+            }
+            {!loading &&
+                <View style={{
+                    flex: 1,
+                    padding: 16
+                }}>
+                    <FlatList ListEmptyComponent={<MyEmpty />} data={dataVoucher} renderItem={({ item, index }) => {
+                        return (
+                            <TouchableOpacity onPress={() => {
+
+                                if (item.jumlah == 0) {
+                                    toast.show("Maaf voucher sudah habis", {
+                                        type: 'danger'
+                                    });
+                                } else {
+                                    setPilih(item);
+                                    setModalVisible(true);
+                                }
+
+                            }} style={{
+                                backgroundColor: Color.white[900],
+
+                                borderRadius: 12,
+                                flexDirection: 'row',
+                                overflow: 'hidden',
+                                marginBottom: 12,
+                            }}>
+                                <Image style={{
+                                    height: '100%',
+                                    width: 45,
+                                }} source={item.jenis == 'Discount' ? require('../../assets/dics.png') : require('../../assets/cash.png')} />
+                                <View style={{
+                                    flex: 1,
+                                    padding: 12,
+                                    borderTopWidth: 1,
+                                    backgroundColor: item.jumlah == 0 ? Color.blueGray[200] : Color.white[900],
+                                    borderWidth: 1,
+                                    borderBottomWidth: 1,
+                                    borderColor: Color.blueGray[100],
+                                    borderTopRightRadius: 12,
+                                    borderBottomRightRadius: 12,
+                                }}>
+                                    <Text style={{
+                                        ...fonts.headline5,
+                                        color: item.jumlah == 0 ? Color.blueGray[400] : Color.blueGray[900],
+                                    }}>{item.nama_voucher}</Text>
+                                    <Text style={{
+                                        ...fonts.body3,
+                                        color: Color.blueGray[400],
+                                        marginBottom: 8,
+                                    }}>{item.informasi}</Text>
+
+                                    <View style={{
+
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        marginBottom: 8,
+
+
+
+                                    }}>
+                                        <MyIcon name='history-3' size={16} color={Color.blueGray[900]} />
+                                        <Text style={{
+                                            left: 8,
+                                            flex: 1,
+                                            ...fonts.caption1,
+                                            color: Color.blueGray[900]
+                                        }}>Berlaku sampai {moment(item.expired).format('DD MMMM YYYY')}</Text>
+                                    </View>
+
+                                    <DashedLine dashLength={8} dashThickness={1} dashGap={5} dashColor={Color.blueGray[200]} dashStyle={{ borderRadius: 2 }} />
+                                    <View style={{
+
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        marginTop: 8,
+
+
+
+                                    }}>
+                                        <Image source={require('../../assets/poin.png')} style={{
+                                            width: 24,
+                                            height: 24,
+                                        }} />
+                                        <Text style={{
+                                            left: 8,
+                                            flex: 1,
+                                            ...fonts.headline5,
+                                            color: Color.blueGray[900]
+                                        }}>{item.poin} poin</Text>
+                                        <Text style={{
+                                            // flex: 1,
+                                            ...fonts.body3,
+                                            color: Color.blueGray[900]
+                                        }}>Tersisa {item.jumlah} voucher</Text>
+
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+                        )
+                    }} />
+                </View>
+
+            }
+
+            {loading && <MyLoading />}
 
 
             <Modal style={{
@@ -366,20 +400,29 @@ export default function FlashSale({ navigation, route }) {
                         <MyGap jarak={20} />
 
                         <MyButton title="Klaim Voucher" onPress={() => {
-                            console.log(pilih)
-                            if (parseFloat(user.poin_saya) >= parseFloat(pilih.poin)) {
-                                setModalVisible(false);
-                                navigation.navigate('Unggah', {
-                                    fid_user: user.id,
-                                    fid_voucher: pilih.id,
-                                    poin: pilih.poin,
-                                })
-                            } else {
-                                setModalVisible(false);
-                                toast.show('Maaf poin yang Kamu miliki tidak cukup. Silahkan kumpulkan poin terlebih dahulu.', {
-                                    type: 'danger'
-                                })
-                            }
+
+
+
+                            setModalVisible(false);
+                            navigation.navigate('Unggah', {
+                                fid_user: user.id,
+                                fid_voucher: pilih.id,
+                                poin: pilih.poin,
+                            })
+
+                            // if (parseFloat(user.poin_saya) >= parseFloat(pilih.poin)) {
+                            //     setModalVisible(false);
+                            //     navigation.navigate('Unggah', {
+                            //         fid_user: user.id,
+                            //         fid_voucher: pilih.id,
+                            //         poin: pilih.poin,
+                            //     })
+                            // } else {
+                            //     setModalVisible(false);
+                            //     toast.show('Maaf poin yang Kamu miliki tidak cukup. Silahkan kumpulkan poin terlebih dahulu.', {
+                            //         type: 'danger'
+                            //     })
+                            // }
 
                         }} />
 

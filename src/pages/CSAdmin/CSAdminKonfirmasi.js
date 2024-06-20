@@ -28,13 +28,13 @@ export default function CSAdminKonfirmasi({ navigation, route }) {
         axios.post(apiURL + 'appointement_add', kirim).then(res => {
             console.log(res.data);
 
-            let WATemplate = `*JADWA JANJI TEMU*%0A%0A`;
-            WATemplate += `Jenis Perawtan = ${kirim.perawatan}%0A`;
+            let WATemplate = `*JADWAL JANJI TEMU*%0A%0A`;
+            WATemplate += `Jenis Perawatan = ${kirim.perawatan}%0A`;
             WATemplate += `Dokter = ${kirim.dokter}%0A%0A`;
             WATemplate += `Nama Lengkap = ${kirim.nama_lengkap}%0A`;
             WATemplate += `Jenis Kelamin = ${kirim.jenis_kelamin}%0A`;
             WATemplate += `Tanggal Lahir = ${kirim.tanggal_lahir}%0A`;
-            WATemplate += `Nomor Teleopn = ${kirim.telepon}%0A`;
+            WATemplate += `Nomor Telepon = ${kirim.telepon}%0A`;
             WATemplate += `No. Rekam Medis = ${kirim.rekam_medis}%0A`;
             WATemplate += `Alamat = ${kirim.alamat}%0A%0A`;
             WATemplate += `Tanggal = ${kirim.tanggal_janji}%0A`;

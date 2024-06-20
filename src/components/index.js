@@ -6,5 +6,7 @@ import MyHeaderPoint from './MyHeaderPoint';
 import MyPicker from './MyPicker';
 import MyIcon from './MyIcon';
 import MyCalendar from './MyCalendar';
+import MyLoading from './MyLoading';
+import MyEmpty from './MyEmpty';
 
-export { MyGap, MyButton, MyInput, MyHeader, MyPicker, MyCalendar, MyIcon, MyHeaderPoint };
+export { MyGap, MyLoading, MyEmpty, MyButton, MyInput, MyHeader, MyPicker, MyCalendar, MyIcon, MyHeaderPoint };

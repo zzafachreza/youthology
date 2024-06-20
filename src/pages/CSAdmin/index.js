@@ -1,6 +1,6 @@
 import { StatusBar, Image, ImageBackground, SafeAreaView, StyleSheet, Text, View, TouchableWithoutFeedback, TextInput, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { Color, fonts } from '../../utils'
+import { Color, fonts, windowHeight, windowWidth } from '../../utils'
 import { apiURL, api_token, getData, storeData } from '../../utils/localStorage'
 import { MyButton, MyCalendar, MyGap, MyHeader, MyHeaderPoint, MyIcon, MyInput, MyPicker } from '../../components';
 
@@ -10,8 +10,11 @@ import DatePicker from 'react-native-datepicker'
 import { maskJs, maskCurrency } from 'mask-js';
 import { useToast } from "react-native-toast-notifications";
 import axios from 'axios';
+import Spinner from 'react-native-spinkit';
 
 export default function CSAdmin({ navigation, route }) {
+
+    const [loading, setLoading] = useState(false);
 
     const [kirim, setKirim] = useState({
         nama_lengkap: '',
@@ -23,6 +26,7 @@ export default function CSAdmin({ navigation, route }) {
         rekam_medis: '',
         alamat: '',
         tanggal_janji: moment().add(8, 'day').format('YYYY-MM-DD'),
+        tanggal_janji_max: moment().add(38, 'day').format('YYYY-MM-DD'),
         jam_janji: ''
     });
 
@@ -42,7 +46,14 @@ export default function CSAdmin({ navigation, route }) {
     ]);
 
     const sendServer = () => {
-        console.log(kirim);
+        let doktmp = dokter.filter(i => i.id == kirim.fid_dokter);
+
+        console.log({
+            ...kirim,
+            dokter: dokter.filter(i => i.id == kirim.fid_dokter)[0].label,
+            perawatan: perawatan.filter(i => i.id == kirim.fid_perawatan)[0].label
+        })
+        // console.log(doktmp)
         navigation.navigate('CSAdminJadwal', {
             ...kirim,
             dokter: dokter.filter(i => i.id == kirim.fid_dokter)[0].label,
@@ -55,23 +66,31 @@ export default function CSAdmin({ navigation, route }) {
         getData('user').then(res => {
 
             setUser(res);
-            setKirim({
-                ...kirim,
-                fid_user: res.id,
-            })
+            // setKirim({
+            //     ...kirim,
+            //     fid_user: res.id,
+            // })
+            setLoading(true);
             axios.post(apiURL + 'perawatan').then(per => {
 
                 setPerawatan(per.data);
                 axios.post(apiURL + 'dokter').then(dok => {
                     console.log(dok.data)
                     setDokter(dok.data);
+                    setKirim({
+                        ...kirim,
+                        fid_user: res.id,
+                        fid_perawatan: per.data[0].value,
+                        fid_dokter: dok.data[0].value,
+                        dokter: dok.data[0].label,
+                        perawatan: per.data[0].label,
+
+                    })
+                }).finally(() => {
+                    setLoading(false);
                 })
 
-                setKirim({
-                    ...kirim,
-                    fid_perawatan: per.data[0].value,
-                    fid_dokter: dok.data[0].value
-                })
+
 
             })
         });
@@ -84,6 +103,19 @@ export default function CSAdmin({ navigation, route }) {
             backgroundColor: Color.white[900]
         }}>
             <MyHeaderPoint />
+            {loading && <View style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                position: 'absolute',
+                // backgroundColor: Color.primary[900],
+                opacity: 0.5,
+                zIndex: 99,
+                height: windowHeight,
+                width: windowWidth
+            }}>
+                <Spinner isVisible={true} size={100} type={"Bounce"} color={Color.primary[900]} />
+            </View>}
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={{
                     padding: 16,

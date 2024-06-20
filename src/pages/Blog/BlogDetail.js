@@ -3,15 +3,26 @@ import React, { useEffect, useState } from 'react'
 import { Color, fonts, windowHeight, windowWidth } from '../../utils'
 import { StatusBar } from 'react-native'
 import moment from 'moment';
-import { MyGap, MyHeader, MyHeaderPoint, MyIcon } from '../../components';
+import { MyGap, MyHeader, MyHeaderPoint, MyIcon, MyLoading } from '../../components';
 import axios from 'axios';
 import { apiURL } from '../../utils/localStorage';
 import RenderHtml from 'react-native-render-html';
 import Share from 'react-native-share';
-
+import FastImage from 'react-native-fast-image'
 export default function BlogDetail({ navigation, route }) {
     const item = route.params;
     const systemFonts = [fonts.body3.fontFamily, fonts.headline4.fontFamily];
+    const [loading, setLoading] = useState(true);
+    const [KETERANGAN, setKETERAGAN] = useState('');
+
+    useEffect(() => {
+        axios.post(apiURL + 'artikel_detail', {
+            id: item.id
+        }).then(res => {
+            console.log(res.data);
+            setKETERAGAN(res.data);
+        })
+    }, [])
     return (
         <SafeAreaView style={{
             flex: 1,
@@ -65,17 +76,28 @@ export default function BlogDetail({ navigation, route }) {
 
                     </View>
 
-                    <Image style={{
-                        marginTop: 12,
-                        height: 230,
-                        width: '100%',
-                        resizeMode: 'stretch',
-                        marginBottom: 12,
-                    }} source={{
-                        uri: item.image
-                    }} />
 
+
+                    <FastImage
+                        style={{
+                            marginTop: 12,
+                            height: 230,
+                            width: '100%',
+                            resizeMode: 'stretch',
+                            marginBottom: 12,
+                        }}
+                        source={{
+                            uri: item.image,
+                            priority: FastImage.priority.normal,
+                        }}
+
+                    />
+
+                    {loading && <MyLoading />}
                     <RenderHtml
+                        onHTMLLoaded={() => {
+                            setLoading(false)
+                        }}
                         tagsStyles={{
                             p: {
                                 fontFamily: fonts.body3.fontFamily,
@@ -86,7 +108,7 @@ export default function BlogDetail({ navigation, route }) {
                         systemFonts={systemFonts}
                         contentWidth={windowWidth}
                         source={{
-                            html: item.keterangan
+                            html: KETERANGAN
                         }}
                     />
 

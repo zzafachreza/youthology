@@ -7,7 +7,7 @@ import KulitBerjerawat from '../../assets/KulitBerjerawat.svg'
 import KulitKusam from '../../assets/KulitKusam.svg'
 import KulitKendur from '../../assets/KulitKendur.svg'
 import FlekHitam from '../../assets/FlekHitam.svg'
-import { MyButton, MyGap, MyHeader, MyIcon } from '../../components';
+import { MyButton, MyEmpty, MyGap, MyHeader, MyIcon, MyLoading } from '../../components';
 import CountDown from 'react-native-countdown-component';
 import MyCarouser from '../../components/MyCarouser';
 import moment from 'moment';
@@ -27,15 +27,16 @@ export default function Tukar({ navigation, route }) {
     const [dataVoucher, setDataVoucher] = useState([]);
     const [isModalVisible, setModalVisible] = useState(false);
     const [pilih, setPilih] = useState({});
-
+    const [loading, setLoading] = useState(true);
 
     const __getVouhcer = () => {
 
-        axios.post(apiURL + 'voucher', {
-            tipe: 'Flash Sale'
+        axios.post(apiURL + 'voucher_all', {
+            tipe: 'Regular'
         }).then(res => {
             console.log(res.data);
-            setDataVoucher(res.data)
+            setDataVoucher(res.data);
+            setLoading(false)
 
         })
 
@@ -73,69 +74,82 @@ export default function Tukar({ navigation, route }) {
                 <Text style={{
                     ...fonts.headline4,
                     marginBottom: 10,
-                }}>Yuk, ambil reward Kamu! 🤩</Text>
-                <FlatList data={dataVoucher} renderItem={({ item, index }) => {
-                    return (
-                        <TouchableOpacity onPress={() => {
-                            setPilih(item);
-                            setModalVisible(true);
-                        }} style={{
-                            backgroundColor: Color.white[900],
+                }}>Yuk, ambil reward Kamu! 🤩 </Text>
+                {!loading &&
 
-                            borderRadius: 12,
-                            flexDirection: 'row',
-                            overflow: 'hidden',
-                            marginBottom: 12,
-                        }}>
-                            <Image style={{
-                                height: '100%',
-                                width: 45,
-                            }} source={item.jenis == 'Discount' ? require('../../assets/dics.png') : require('../../assets/cash.png')} />
-                            <View style={{
-                                flex: 1,
-                                padding: 12,
-                                borderTopWidth: 1,
-                                borderWidth: 1,
-                                borderBottomWidth: 1,
-                                borderColor: Color.blueGray[100],
-                                borderTopRightRadius: 12,
-                                borderBottomRightRadius: 12,
+                    <FlatList ListEmptyComponent={<MyEmpty />} data={dataVoucher.filter(i => i.poin <= parseInt(user.poin_saya))} renderItem={({ item, index }) => {
+                        return (
+                            <TouchableOpacity onPress={() => {
+                                if (item.jumlah == 0) {
+                                    toast.show("Maaf voucher sudah habis", {
+                                        type: 'danger'
+                                    });
+                                } else {
+                                    setPilih(item);
+                                    setModalVisible(true);
+                                }
+
+                            }} style={{
+                                backgroundColor: Color.white[900],
+
+                                borderRadius: 12,
+                                flexDirection: 'row',
+                                overflow: 'hidden',
+                                marginBottom: 12,
                             }}>
-                                <Text style={{
-                                    ...fonts.headline5,
-                                    color: Color.blueGray[900],
-                                }}>{item.nama_voucher}</Text>
-                                <Text style={{
-                                    ...fonts.body3,
-                                    color: Color.blueGray[400],
-                                    marginBottom: 8,
-                                }}>{item.informasi}</Text>
-
-
-
-                                <DashedLine dashLength={8} dashThickness={1} dashGap={5} dashColor={Color.blueGray[200]} dashStyle={{ borderRadius: 2 }} />
+                                <Image style={{
+                                    height: '100%',
+                                    width: 45,
+                                }} source={item.jenis == 'Discount' ? require('../../assets/dics.png') : require('../../assets/cash.png')} />
                                 <View style={{
-
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    marginTop: 8,
-
-
-
+                                    flex: 1,
+                                    padding: 12,
+                                    borderTopWidth: 1,
+                                    borderWidth: 1,
+                                    backgroundColor: item.jumlah == 0 ? Color.blueGray[200] : Color.white[900],
+                                    borderBottomWidth: 1,
+                                    borderColor: Color.blueGray[100],
+                                    borderTopRightRadius: 12,
+                                    borderBottomRightRadius: 12,
                                 }}>
-
                                     <Text style={{
-
-                                        flex: 1,
                                         ...fonts.headline5,
-                                        color: Color.blueGray[900]
-                                    }}>Klaim Reward</Text>
-                                    <MyIcon name='round-alt-arrow-right' size={24} color={Color.primary[900]} />
+                                        color: item.jumlah == 0 ? Color.blueGray[400] : Color.blueGray[900],
+                                    }}>{item.nama_voucher}</Text>
+                                    <Text style={{
+                                        ...fonts.body3,
+                                        color: Color.blueGray[400],
+                                        marginBottom: 8,
+                                    }}>{item.informasi}</Text>
+
+
+
+                                    <DashedLine dashLength={8} dashThickness={1} dashGap={5} dashColor={Color.blueGray[200]} dashStyle={{ borderRadius: 2 }} />
+                                    <View style={{
+
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        marginTop: 8,
+
+
+
+                                    }}>
+
+                                        <Text style={{
+
+                                            flex: 1,
+                                            ...fonts.headline5,
+                                            color: Color.blueGray[900]
+                                        }}>Klaim Reward</Text>
+                                        <MyIcon name='round-alt-arrow-right' size={24} color={Color.primary[900]} />
+                                    </View>
                                 </View>
-                            </View>
-                        </TouchableOpacity>
-                    )
-                }} />
+                            </TouchableOpacity>
+                        )
+                    }} />
+                }
+
+                {loading && <MyLoading />}
             </View>
 
 
@@ -265,13 +279,15 @@ export default function Tukar({ navigation, route }) {
                             axios.post(apiURL + 'reward_add', {
                                 fid_user: user.id,
                                 fid_voucher: pilih.id,
-                                poin: 0,
+                                poin: pilih.poin,
                             }).then(res => {
                                 console.log(res.data);
                                 if (res.data.status == 200) {
                                     toast.show(res.data.message, {
                                         type: 'success'
                                     });
+
+                                    __GetUserProfile();
 
                                 }
                             }).finally(() => {

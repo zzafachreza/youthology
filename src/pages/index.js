@@ -29,6 +29,7 @@ import Notifikasi from './Home/Notifikasi';
 import Otp from './Login/Otp';
 import Lupa from './Login/Lupa';
 import Reset from './Login/Reset';
+import JadwalSaya from './Account/JadwalSaya';
 
 
 
@@ -67,5 +68,6 @@ export {
   Notifikasi,
   Otp,
   Lupa,
-  Reset
+  Reset,
+  JadwalSaya
 };

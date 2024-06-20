@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Color, fonts, windowWidth } from '../../utils'
 import { StatusBar } from 'react-native'
 import { apiURL, getData } from '../../utils/localStorage';
-import { MyGap, MyHeaderPoint, MyIcon } from '../../components';
+import { MyEmpty, MyGap, MyHeaderPoint, MyIcon, MyLoading } from '../../components';
 import moment from 'moment';
 import { Icon } from 'react-native-elements';
 import axios from 'axios';
@@ -27,14 +27,7 @@ export default function Treatment({ navigation, route = {
 
 
 
-    const [dataJawdal, setDataJadwal] = useState([
-        {
-            nama_perawatan: 'Milky Laser Booster',
-            tanggal_janji: '2024-06-23',
-            jam_janji: '09:00',
-
-        },
-    ]);
+    const [dataJawdal, setDataJadwal] = useState([]);
 
     const [tmp, setTmp] = useState([
         {
@@ -62,7 +55,8 @@ export default function Treatment({ navigation, route = {
     ]);
 
     const [selectKulit, setSelectKulit] = useState(0);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [loadingArtikel, setLoadingArtikel] = useState(true);
     const isFocus = useIsFocused();
 
     useEffect(() => {
@@ -72,18 +66,20 @@ export default function Treatment({ navigation, route = {
         }
     }, [isFocus]);
     const __getJadwal = () => {
+        setLoading(true)
         getData('user').then(uu => {
             axios.post(apiURL + 'appointment', {
                 fid_user: uu.id
             }).then(res => {
                 console.log('jadwal', res.data);
                 setDataJadwal(res.data);
+                setLoading(false)
             })
         })
     }
     const __GetDataKulit = () => {
-        setLoading(true);
-        axios.post(apiURL + 'artikel', {
+        setLoadingArtikel(true);
+        axios.post(apiURL + 'artikel_perawatan', {
             tipe: 'Masalah Kulit'
         }).then(res => {
             console.log(res.data);
@@ -92,10 +88,9 @@ export default function Treatment({ navigation, route = {
                 TMP[idx].cek = idx == 0 ? 1 : 0
             })
             setDataKulit(TMP);
+            setLoadingArtikel(false)
         }).finally(() => {
-            setTimeout(() => {
-                setLoading(false);
-            }, 1000)
+
         })
     }
     return (
@@ -148,7 +143,7 @@ export default function Treatment({ navigation, route = {
 
             {/* SUB HALAMAN TREATMENT */}
             {/* TREATMENT */}
-            {pilih == 0 && !loading &&
+            {pilih == 0 && !loadingArtikel &&
 
                 <View style={{
                     padding: 16
@@ -251,6 +246,8 @@ export default function Treatment({ navigation, route = {
 
 
             }
+
+            {loadingArtikel && <MyLoading />}
             {/* JADWAL */}
             {pilih === 1 &&
                 <View style={{
@@ -276,7 +273,7 @@ export default function Treatment({ navigation, route = {
 
 
                                 if (x.length > 0) {
-                                    let TMPSrc = dataJawdal.filter(i => i.perawatan.toLowerCase().indexOf(x.toLowerCase()) > -1);
+                                    let TMPSrc = dataJawdal.filter(i => i.nama_perawatan.toLowerCase().indexOf(x.toLowerCase()) > -1);
                                     if (TMPSrc.length > 0) {
                                         setDataJadwal(TMPSrc);
                                     }
@@ -331,7 +328,7 @@ export default function Treatment({ navigation, route = {
                         }}>Semua Jadwal Perawatan</Text>
 
                     </View>
-                    <FlatList showsVerticalScrollIndicator={false} data={dataJawdal} renderItem={({ item, index }) => {
+                    {!loading && <FlatList ListEmptyComponent={<MyEmpty />} showsVerticalScrollIndicator={false} data={dataJawdal} renderItem={({ item, index }) => {
                         return (
                             <TouchableWithoutFeedback onPress={() => navigation.navigate('JadwalDetail', item)}>
                                 <View style={{
@@ -394,7 +391,9 @@ export default function Treatment({ navigation, route = {
                                 </View>
                             </TouchableWithoutFeedback>
                         )
-                    }} />
+                    }} />}
+
+                    {loading && <MyLoading />}
                 </View>
             }
         </SafeAreaView>

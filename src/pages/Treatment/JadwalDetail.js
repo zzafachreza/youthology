@@ -27,7 +27,8 @@ export default function JadwalDetail({ navigation, route }) {
             flex: 1,
             backgroundColor: Color.white[900]
         }}>
-            <MyHeaderPoint />
+            <StatusBar backgroundColor={Color.white[900]} barStyle="dark-content" />
+            <MyHeader title="Detail Jadwal" />
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={{
                     padding: 16,

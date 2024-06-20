@@ -2,7 +2,7 @@ import { StatusBar, Image, ImageBackground, SafeAreaView, StyleSheet, Text, View
 import React, { useEffect, useState } from 'react'
 import { Color, fonts } from '../../utils'
 import { apiURL, api_token, getData, storeData } from '../../utils/localStorage'
-import { MyButton, MyCalendar, MyGap, MyHeader, MyIcon } from '../../components';
+import { MyButton, MyCalendar, MyGap, MyHeader, MyIcon, MyLoading } from '../../components';
 
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import moment from 'moment';
@@ -375,7 +375,7 @@ export default function Register({ navigation, route }) {
 
                         <MyGap jarak={24} />
                         {!loading && <MyButton title="Daftar" onPress={sendServer} />}
-                        {loading && <ActivityIndicator color={Color.primary[900]} size="large" />}
+                        {loading && <MyLoading />}
                         <MyGap jarak={12} />
                         <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                             <Text style={{

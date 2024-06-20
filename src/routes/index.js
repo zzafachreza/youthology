@@ -34,7 +34,8 @@ import {
   Notifikasi,
   Lupa,
   Otp,
-  Reset
+  Reset,
+  JadwalSaya
 } from '../pages';
 import { colors } from '../utils';
 import { Icon } from 'react-native-elements';
@@ -291,6 +292,16 @@ export default function Router() {
       <Stack.Screen
         name="Reset"
         component={Reset}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+
+
+      <Stack.Screen
+        name="JadwalSaya"
+        component={JadwalSaya}
         options={{
           headerShown: false,
         }}

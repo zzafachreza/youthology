@@ -49,29 +49,50 @@ export default function Cara({ navigation, route }) {
                 <View style={{
                     padding: 16
                 }}>
-                    <Text style={{
-                        ...fonts.headline4,
-                        color: Color.blueGray[900],
-                        marginBottom: 12,
-                    }}>Bagaimana cara saya mendapatkan poin?</Text>
+                    <View style={{
+                        marginVertical: 12,
+                        backgroundColor: Color.blueGray[50],
+                        padding: 16,
+                        borderRadius: 12,
+                        flexDirection: 'row',
+                        alignItem: 'center',
+                    }}>
+                        <MyIcon name='question-square' size={24} color={Color.blueGray[900]} />
+                        <Text style={{
+                            flex: 1,
+                            left: 10,
+                            ...fonts.headline4,
+                            color: Color.blueGray[900],
+                            marginBottom: 12,
+                        }}>Bagaimana cara saya mendapatkan poin?</Text>
+                    </View>
                     <FlatList data={data} renderItem={(({ item, index }) => {
                         return (
 
                             <View style={{
                                 flexDirection: 'row',
-                                alignItems: 'center',
-                                borderWidth: 1,
+                                // alignItems: 'center',
                                 padding: 12,
                                 marginVertical: 8,
                                 borderRadius: 12,
                                 borderColor: Color.blueGray[100]
                             }}>
-                                <Text style={{
-                                    marginRight: 10,
-                                    ...fonts.headline3,
-                                }}>{index + 1}</Text>
+                                <View style={{
+                                    width: 36,
+                                    height: 36,
+                                    backgroundColor: Color.blueGray[100],
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    borderRadius: 100,
+                                }}>
+                                    <Text style={{
+                                        ...fonts.headline3,
+                                    }}>{index + 1}</Text>
+                                </View>
                                 <Text style={{
                                     flex: 1,
+                                    left: 10,
+                                    ...fonts.body3
                                 }}>{item.langkah}</Text>
                             </View>
                         )

@@ -3,25 +3,27 @@ import React, { useEffect, useState } from 'react'
 import { Color, fonts, windowHeight } from '../../utils'
 import { StatusBar } from 'react-native'
 import moment from 'moment';
-import { MyGap, MyHeader, MyHeaderPoint, MyIcon } from '../../components';
+import { MyGap, MyHeader, MyHeaderPoint, MyIcon, MyLoading } from '../../components';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import axios from 'axios';
 import { apiURL } from '../../utils/localStorage';
-
+import FastImage from 'react-native-fast-image'
 export default function Blog({ navigation, route }) {
 
     const [data, setData] = useState([]);
     const [tmp, setTemp] = useState([]);
-
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         __GetData();
     }, []);
 
     const __GetData = () => {
-        axios.post(apiURL + 'artikel').then(res => {
+        setLoading(true)
+        axios.post(apiURL + 'artikel_all').then(res => {
             console.log(res.data);
             setData(res.data);
+            setLoading(false);
         })
     }
 
@@ -86,7 +88,7 @@ export default function Blog({ navigation, route }) {
                         marginBottom: 20,
                     }}>Sedang Hangat</Text>
 
-                    <FlatList showsHorizontalScrollIndicator={false} data={data} horizontal renderItem={({ item, index }) => {
+                    <FlatList ListEmptyComponent={loading && <MyLoading />} showsHorizontalScrollIndicator={false} data={data} horizontal renderItem={({ item, index }) => {
                         return (
                             <TouchableWithoutFeedback onPress={() => navigation.navigate('BlogDetail', item)}>
                                 <View style={{
@@ -99,14 +101,22 @@ export default function Blog({ navigation, route }) {
                                     padding: 12,
                                     marginRight: 12,
                                 }}>
-                                    <Image source={{
-                                        uri: item.image
-                                    }} style={{
-                                        borderRadius: 8,
-                                        width: 280,
-                                        height: 180,
-                                        alignSelf: 'center',
-                                    }} />
+
+
+                                    <FastImage
+                                        style={{
+                                            borderRadius: 8,
+                                            width: 280,
+                                            height: 180,
+                                            alignSelf: 'center',
+                                        }}
+                                        source={{
+                                            uri: item.image,
+                                            priority: FastImage.priority.normal,
+                                        }}
+
+                                    />
+
                                     <Text style={{
                                         marginTop: 12,
                                         ...fonts.headline4,
@@ -134,7 +144,7 @@ export default function Blog({ navigation, route }) {
                         marginBottom: 20,
                     }}>Blog dan Artikel Terbaru</Text>
 
-                    <FlatList showsVerticalScrollIndicator={false} data={data} renderItem={({ item, index }) => {
+                    <FlatList ListEmptyComponent={loading && <MyLoading />} showsVerticalScrollIndicator={false} data={data} renderItem={({ item, index }) => {
                         return (
                             <TouchableWithoutFeedback onPress={() => navigation.navigate('BlogDetail', item)}>
                                 <View style={{
@@ -185,14 +195,20 @@ export default function Blog({ navigation, route }) {
                                     <View style={{
                                         // flex: 0.8
                                     }}>
-                                        <Image source={{
-                                            uri: item.image,
-                                        }} style={{
-                                            height: 160,
-                                            width: 120,
-                                            borderRadius: 8,
-                                            // resizeMode: 'cover'
-                                        }} />
+
+
+                                        <FastImage
+                                            style={{
+                                                height: 160,
+                                                width: 120,
+                                                borderRadius: 8,
+                                            }}
+                                            source={{
+                                                uri: item.image,
+                                                priority: FastImage.priority.normal,
+                                            }}
+
+                                        />
                                     </View>
 
                                 </View>

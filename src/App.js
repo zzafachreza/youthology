@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
-import React, { useEffect } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import React, { useEffect, useRef } from 'react';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import Router from './routes';
 import { LogBox, Pressable, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import FlashMessage from 'react-native-flash-message';
@@ -13,10 +13,13 @@ import { MyIcon } from './components';
 import { fonts } from './utils';
 import { Icon } from 'react-native-elements';
 
+
+
 export default function App() {
   LogBox.ignoreAllLogs();
-
   const toastACT = useToast();
+
+  const navigationRef = useRef();
 
   PushNotification.createChannel(
     {
@@ -42,6 +45,16 @@ export default function App() {
     // (required) Called when a remote is received or opened, or local notification is opened
     onNotification: function (notification) {
       console.log('NOTIFICATION:', notification);
+
+      if (notification.title == 'Klaim Voucher') {
+        navigationRef.current?.navigate('VoucherSaya')
+      } else if (notification.title == 'Jadwal Perawatan') {
+        navigationRef.current?.navigate('JadwalSaya');
+
+      } else {
+        navigationRef.current?.navigate('Notifikasi');
+      }
+
       // getPushNotifikasi(notification.title, notification.message);
     },
 
@@ -49,6 +62,7 @@ export default function App() {
     onAction: function (notification) {
       // console.log('ACTION:', notification.action);
       // console.log('NOTIFICATION:', notification);
+
       // process the action
     },
 
@@ -78,8 +92,12 @@ export default function App() {
     requestPermissions: true,
   });
 
+
+
+
+
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <ToastProvider
         duration={2000}
         placement="bottom"

@@ -7,7 +7,7 @@ import KulitBerjerawat from '../../assets/KulitBerjerawat.svg'
 import KulitKusam from '../../assets/KulitKusam.svg'
 import KulitKendur from '../../assets/KulitKendur.svg'
 import FlekHitam from '../../assets/FlekHitam.svg'
-import { MyButton, MyGap, MyIcon } from '../../components';
+import { MyButton, MyGap, MyIcon, MyLoading } from '../../components';
 import CountDown from 'react-native-countdown-component';
 import MyCarouser from '../../components/MyCarouser';
 import moment from 'moment';
@@ -18,7 +18,7 @@ import axios from 'axios';
 import { useIsFocused } from '@react-navigation/native';
 import messaging from '@react-native-firebase/messaging';
 import PushNotification, { Importance } from 'react-native-push-notification';
-
+import FastImage from 'react-native-fast-image'
 export default function Home({ navigation, route }) {
 
   const toast = useToast();
@@ -37,21 +37,24 @@ export default function Home({ navigation, route }) {
 
   const [dataArtikel, setDataArtikel] = useState([]);
   const [dataKulit, setDataKulit] = useState([]);
+  const [loadingArtikel, setLoadingArtikel] = useState(false);
 
 
   const [REWARD, setREWARD] = useState([0, 0, 0, 0, 0, 0, 0]);
   const isFocus = useIsFocused();
+  const [POPUP, setPOPUP] = useState('')
 
 
   useEffect(() => {
     __GetDataArtikel();
     __GetDataKulit();
     updateTOKEN();
+    _getPopup();
     if (isFocus) {
       getFalshSale();
       __getJadwal();
       __GetUserProfile();
-      __getPoinHarian()
+      __getPoinHarian();
     }
 
     const unsubscribe = messaging().onMessage(async remoteMessage => {
@@ -69,6 +72,10 @@ export default function Home({ navigation, route }) {
         message: obj.body, // (required)
         vibrate: true,
       });
+
+      getFalshSale();
+
+
     });
 
     messaging().setBackgroundMessageHandler(async remoteMessage => {
@@ -97,7 +104,8 @@ export default function Home({ navigation, route }) {
   const [FLASHSALE, setFALSHSALE] = useState(0);
   const getFalshSale = () => {
     axios.post(apiURL + 'get_flash_sale').then(res => {
-      setFALSHSALE(res.data);
+      console.log('FLASH SALE', res.data)
+      setFALSHSALE(parseInt(res.data));
     })
   }
 
@@ -110,7 +118,7 @@ export default function Home({ navigation, route }) {
       }).then(res => {
 
         getData('token').then(token => {
-          console.log(token.token);
+          // console.log(token.token);
           // alert(token.token);
 
           if (token.token !== res.data) {
@@ -119,10 +127,10 @@ export default function Home({ navigation, route }) {
               id: uu.id,
               token: token.token
             }).then(resp => {
-              console.log('token berhasil diperbaharui', resp.data)
+              // console.log('token berhasil diperbaharui', resp.data)
             })
           } else {
-            console.log('token terbaru')
+            // console.log('token terbaru')
           }
         })
 
@@ -133,12 +141,22 @@ export default function Home({ navigation, route }) {
   }
 
   const __GetDataArtikel = () => {
+    setLoadingArtikel(true)
     axios.post(apiURL + 'artikel', {
       limit: 3,
       tipe: 'Regular'
     }).then(res => {
 
       setDataArtikel(res.data);
+      setLoadingArtikel(false)
+    })
+  }
+
+  const _getPopup = () => {
+    axios.post(apiURL + 'popup').then(res => {
+
+      console.log(res.data);
+      setPOPUP(res.data);
     })
   }
 
@@ -156,7 +174,6 @@ export default function Home({ navigation, route }) {
       axios.post(apiURL + 'user_data', {
         id: uu.id
       }).then(res => {
-        console.log(res.data)
         if (res.data.cekin !== moment().format('YYYY-MM-DD')) {
           setModalVisible2(true)
         }
@@ -189,7 +206,6 @@ export default function Home({ navigation, route }) {
       axios.post(apiURL + 'appointment', {
         fid_user: uu.id
       }).then(res => {
-        console.log('jadwal', res.data);
         setDataJadwal(res.data);
       })
     })
@@ -320,34 +336,35 @@ export default function Home({ navigation, route }) {
               ...fonts.headline4,
               color: Color.blueGray[900]
             }}>Flash Sale!</Text>
-            <View style={{
-              // flex: 1,
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-              <Text style={{
+            {FLASHSALE > 0 &&
+              <View style={{
+                // flex: 1,
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
+                <Text style={{
 
-                ...fonts.caption1,
-                color: Color.blueGray[900],
-                marginRight: 5,
-              }}>Berakhir dalam</Text>
-              <CountDown
-                id={FLASHSALE}
-                until={FLASHSALE}
-                size={15}
-                showSeparator
-                separatorStyle={{
-                  marginHorizontal: 4,
-                  color: Color.blueGray[400],
+                  ...fonts.caption1,
+                  color: Color.blueGray[900],
+                  marginRight: 5,
+                }}>Berakhir dalam</Text>
+                <CountDown
+                  id={'ID' + FLASHSALE}
+                  until={FLASHSALE}
+                  size={15}
+                  showSeparator
+                  separatorStyle={{
+                    marginHorizontal: 4,
+                    color: Color.blueGray[400],
 
-                }}
-                onFinish={() => alert('Finished')}
-                digitStyle={{ backgroundColor: Color.red[500] }}
-                digitTxtStyle={{ color: Color.white[900] }}
-                timeToShow={['H', 'M', 'S']}
-                timeLabels={{ h: null, m: null, s: null }}
-              />
-            </View>
+                  }}
+                  digitStyle={{ backgroundColor: Color.red[500] }}
+                  digitTxtStyle={{ color: Color.white[900] }}
+                  timeToShow={['H', 'M', 'S']}
+                  timeLabels={{ h: null, m: null, s: null }}
+                />
+              </View>
+            }
           </View>
           <MyCarouser />
         </View>
@@ -415,9 +432,7 @@ export default function Home({ navigation, route }) {
               ...fonts.headline4,
               color: Color.blueGray[900]
             }}>Jadwal Perawatanmu</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Treatment', {
-              open: 'Jadwal'
-            })}>
+            <TouchableOpacity onPress={() => navigation.navigate('JadwalSaya')}>
               <Text style={{
                 ...fonts.subheadline3,
                 color: Color.blueGray[900]
@@ -502,7 +517,7 @@ export default function Home({ navigation, route }) {
           }}>Blog dan Artikel</Text>
 
 
-          <FlatList data={dataArtikel} renderItem={({ item, index }) => {
+          <FlatList ListEmptyComponent={loadingArtikel && <MyLoading />} data={dataArtikel} renderItem={({ item, index }) => {
             return (
               <TouchableWithoutFeedback onPress={() => navigation.navigate('BlogDetail', item)}>
                 <View style={{
@@ -553,14 +568,20 @@ export default function Home({ navigation, route }) {
                   <View style={{
                     // flex: 0.8
                   }}>
-                    <Image source={{
-                      uri: item.image
-                    }} style={{
-                      height: 160,
-                      width: 120,
-                      borderRadius: 8,
-                      // resizeMode: 'cover'
-                    }} />
+
+
+                    <FastImage
+                      style={{
+                        height: 160,
+                        width: 120,
+                        borderRadius: 8,
+                      }}
+                      source={{
+                        uri: item.image,
+                        priority: FastImage.priority.normal,
+                      }}
+                    // resizeMode={FastImage.resizeMode.contain}
+                    />
                   </View>
 
                 </View>
@@ -607,12 +628,23 @@ export default function Home({ navigation, route }) {
           setModalVisible2(!isModalVisible2);
         }}>
         <View style={{ flex: 1, justifyContent: 'center' }}>
-          <ImageBackground resizeMode="contain" source={require('../../assets/promo.png')} style={{
-            height: windowHeight / 1.5,
-            paddingTop: 24,
-            paddingHorizontal: 18
-          }}>
-          </ImageBackground>
+
+          <FastImage
+            style={{
+              height: windowHeight / 1.5,
+              paddingTop: 24,
+              paddingHorizontal: 18
+            }}
+            source={{
+              uri: POPUP,
+              priority: FastImage.priority.normal,
+            }}
+
+            resizeMode={FastImage.resizeMode.contain}
+
+          />
+
+
           <TouchableOpacity onPress={() => {
             setModalVisible2(false);
             setModalVisible(true);

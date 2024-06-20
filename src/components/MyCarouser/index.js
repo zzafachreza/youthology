@@ -11,43 +11,55 @@ import {
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { colors } from '../../utils/colors';
 import axios from 'axios';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { fonts } from '../../utils/fonts';
 import { Icon } from 'react-native-elements';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { apiURL } from '../../utils/localStorage';
-
+import FastImage from 'react-native-fast-image'
 
 export default function MyCarouser() {
   const [activeSlide, setActiveSlide] = useState(0);
   const windowWidth = Dimensions.get('window').width;
   const windowHeight = Dimensions.get('window').height;
   const navigation = useNavigation();
-
+  const isFocus = useIsFocused();
   useEffect(() => {
-    axios.get(apiURL + 'banner').then(res => {
-      console.log('slider', res.data);
-      setData(res.data);
-    });
-  }, []);
+    if (isFocus) {
+      axios.get(apiURL + 'banner').then(res => {
+        console.log('slider', res.data);
+        setData(res.data);
+      });
+    }
+
+  }, [isFocus]);
 
   const [data, setData] = useState([]);
 
 
 
+
+
   const renderCarouselItem = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate('FlashSale')}>
-      <Image
-        source={{
-          uri: item.image
-        }}
+    <TouchableOpacity onPress={() => navigation.navigate('FlashSale', {
+      tipe: item.tipe,
+      image: item.image
+    })}>
+
+      <FastImage
         style={{
           resizeMode: 'cover',
           height: 110,
           width: 340,
           borderRadius: 10,
         }}
+        source={{
+          uri: item.image,
+          priority: FastImage.priority.normal,
+        }}
+        resizeMode={FastImage.resizeMode.contain}
       />
+
     </TouchableOpacity>
   );
 

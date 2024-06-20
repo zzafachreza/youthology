@@ -2,7 +2,7 @@ import { StatusBar, Image, ImageBackground, SafeAreaView, StyleSheet, Text, View
 import React, { useEffect, useState } from 'react'
 import { Color, fonts } from '../../utils'
 import { apiURL, api_token, getData, storeData } from '../../utils/localStorage'
-import { MyButton, MyCalendar, MyGap, MyHeader, MyIcon } from '../../components';
+import { MyButton, MyCalendar, MyGap, MyHeader, MyIcon, MyLoading } from '../../components';
 
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import moment from 'moment';
@@ -19,7 +19,7 @@ export default function Reset({ navigation, route }) {
     const [buka, setBuka] = useState(false);
     const [buka2, setBuka2] = useState(false);
     const [sama, SetSama] = useState(true);
-
+    const [loading, setLoading] = useState(false);
     const toast = useToast();
     const sendServer = () => {
         if (kirim.password.length == 0) {
@@ -27,6 +27,7 @@ export default function Reset({ navigation, route }) {
                 type: 'danger'
             })
         } else {
+            setLoading(true);
             axios.post(apiURL + 'reset_sandi', kirim).then(res => {
                 console.log(res.data);
                 if (res.data.status == 200) {
@@ -40,6 +41,8 @@ export default function Reset({ navigation, route }) {
                         type: 'danger'
                     })
                 }
+            }).finally(() => {
+                setLoading(false);
             })
         }
     }
@@ -161,7 +164,8 @@ export default function Reset({ navigation, route }) {
                 </View>
 
                 <MyGap jarak={20} />
-                <MyButton onPress={sendServer} title="Kirim" />
+                {!loading && <MyButton onPress={sendServer} title="Kirim" />}
+                {loading && <MyLoading />}
             </ScrollView>
         </SafeAreaView>
     )

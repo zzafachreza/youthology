@@ -2,7 +2,7 @@ import { StatusBar, Image, ImageBackground, SafeAreaView, StyleSheet, Text, View
 import React, { useEffect, useState } from 'react'
 import { Color, fonts } from '../../utils'
 import { apiURL, api_token, getData, storeData } from '../../utils/localStorage'
-import { MyButton, MyGap, MyIcon } from '../../components'
+import { MyButton, MyGap, MyIcon, MyLoading } from '../../components'
 import { maskJs, maskCurrency } from 'mask-js';
 import axios from 'axios'
 import { useToast } from "react-native-toast-notifications";
@@ -182,7 +182,7 @@ export default function Login({ navigation, route }) {
             </TouchableOpacity>
             <MyGap jarak={24} />
             {!loading && <MyButton title="Masuk" onPress={sendServer} />}
-            {loading && <ActivityIndicator color={Color.primary[900]} size="large" />}
+            {loading && <MyLoading />}
             <MyGap jarak={12} />
             <TouchableOpacity onPress={() => navigation.navigate('Register')}>
               <Text style={{

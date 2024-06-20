@@ -2,7 +2,7 @@ import { StatusBar, Image, ImageBackground, SafeAreaView, StyleSheet, Text, View
 import React, { useEffect, useState } from 'react'
 import { Color, fonts } from '../../utils'
 import { apiURL, api_token, getData, storeData } from '../../utils/localStorage'
-import { MyButton, MyCalendar, MyGap, MyHeader, MyHeaderPoint, MyIcon, MyInput, MyPicker } from '../../components';
+import { MyButton, MyCalendar, MyGap, MyHeader, MyHeaderPoint, MyIcon, MyInput, MyLoading, MyPicker } from '../../components';
 
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import moment from 'moment';
@@ -180,7 +180,7 @@ export default function Unggah({ navigation, route }) {
                         </Text>
                     </TouchableOpacity>}
 
-                    {loading && <ActivityIndicator size="large" color={Color.primary[900]} />}
+                    {loading && <MyLoading />}
 
                 </View>
             </ScrollView>
