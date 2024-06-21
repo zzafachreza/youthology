@@ -57,7 +57,6 @@ export default function JadwalSaya({ navigation, route }) {
                     <View style={{
                         flex: 1,
                         height: 50,
-                        marginRight: 8
                     }}>
                         <View style={{
                             position: 'absolute',
@@ -92,26 +91,6 @@ export default function JadwalSaya({ navigation, route }) {
 
                     </View>
 
-                    <TouchableOpacity style={{
-                        height: 50,
-                        width: 110,
-                        borderWidth: 2,
-                        borderRadius: 8,
-                        borderColor: Color.primary[900],
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                    }}>
-                        <View style={{
-                            flexDirection: 'row'
-                        }}>
-                            <MyIcon name='filter' color={Color.primary[900]} size={24} />
-                            <Text style={{
-                                marginLeft: 8,
-                                ...fonts.headline4,
-                                color: Color.primary[900],
-                            }}>Filter</Text>
-                        </View>
-                    </TouchableOpacity>
                 </View>
                 <View style={{
                     marginTop: 12,
