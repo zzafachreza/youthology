@@ -11,7 +11,7 @@ import { maskJs, maskCurrency } from 'mask-js';
 import { useToast } from "react-native-toast-notifications";
 import axios from 'axios';
 
-export default function CSAdminJadwal({ navigation, route }) {
+export default function JadwalEdit({ navigation, route }) {
 
     const toast = useToast();
     const [loading, setLoading] = useState(false);
@@ -32,19 +32,25 @@ export default function CSAdminJadwal({ navigation, route }) {
 
     const sendServer = () => {
         console.log(kirim);
-        if (kirim.jam_janji.length == 0) {
-            toast.show('Jam perawatan wajib di pilih', {
-                type: 'danger'
-            })
-        }
-        navigation.navigate('CSAdminKonfirmasi', kirim)
+        setLoading(true);
+        axios.post(apiURL + 'appointment_edit', kirim).then(res => {
+            console.log(res.data);
+            if (res.data.status == 200) {
+                toast.show(res.data.message, {
+                    type: 'success'
+                });
+                setLoading(false);
+                navigation.goBack();
+            }
+        })
+        // navigation.navigate('CSAdminKonfirmasi', kirim)
     }
     return (
         <SafeAreaView style={{
             flex: 1,
             backgroundColor: Color.white[900]
         }}>
-            <MyHeaderPoint />
+            <MyHeader title="Jadwalkan Ulang" />
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={{
                     padding: 16,
@@ -77,7 +83,7 @@ export default function CSAdminJadwal({ navigation, route }) {
                 }}>
                     <Calendar
                         scrollable
-                        maxDate={kirim.tanggal_janji_max}
+                        maxDate={moment().add(37, 'day').format('YYYY-MM-DD')}
                         minDate={moment().add(7, 'day').format('YYYY-MM-DD')}
                         disableAllTouchEventsForDisabledDays={true}
                         theme={{
@@ -137,27 +143,14 @@ export default function CSAdminJadwal({ navigation, route }) {
                         }} />
                     </>}
 
-                    {loading && <MyLoading />}
+
 
 
 
                     <MyGap jarak={24} />
-                    <View style={{
-                        flexDirection: 'row'
-                    }}>
-                        <View style={{
-                            flex: 1,
-                            paddingRight: 6,
-                        }}>
-                            <MyButton onPress={() => navigation.goBack()} title="Kembali" backgroundColor={Color.white[900]} textColor={Color.primary[900]} borderSize={2} />
-                        </View>
-                        <View style={{
-                            flex: 1,
-                            paddingLeft: 6
-                        }}>
-                            <MyButton title="Lanjutkan" onPress={sendServer} />
-                        </View>
-                    </View>
+                    <MyButton title="Simpan Perubahan" onPress={sendServer} />
+
+                    {loading && <MyLoading />}
 
                 </View>
             </ScrollView>

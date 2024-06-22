@@ -23,7 +23,9 @@ export default function Home({ navigation, route }) {
 
   const toast = useToast();
 
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState({
+    nama_lengkap: 'Nama Saya'
+  });
   const [isModalVisible2, setModalVisible2] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
 
@@ -51,6 +53,8 @@ export default function Home({ navigation, route }) {
     updateTOKEN();
     _getPopup();
     if (isFocus) {
+
+      __cekOpenApps();
       getFalshSale();
       __getJadwal();
       __GetUserProfile();
@@ -101,6 +105,15 @@ export default function Home({ navigation, route }) {
 
 
   }, [isFocus]);
+
+  const __cekOpenApps = () => {
+    getData('banner').then(res => {
+      console.log(res);
+      if (res.open) {
+        setModalVisible2(true);
+      }
+    })
+  }
 
 
   const [FLASHSALE, setFALSHSALE] = useState(0);
@@ -176,9 +189,9 @@ export default function Home({ navigation, route }) {
       axios.post(apiURL + 'user_data', {
         id: uu.id
       }).then(res => {
-        if (res.data.cekin !== moment().format('YYYY-MM-DD')) {
-          setModalVisible2(true)
-        }
+        // if (res.data.cekin !== moment().format('YYYY-MM-DD')) {
+        //   setModalVisible2(true)
+        // }
         storeData('user', res.data)
         setUser(res.data);
       })
@@ -224,10 +237,10 @@ export default function Home({ navigation, route }) {
       <StatusBar backgroundColor={Color.primary[900]} barStyle="light-content" />
       {/* header */}
       <View style={{
-        height: 80,
+        height: 100,
         padding: 16,
         flexDirection: 'row',
-        alignItems: 'center',
+        alignItems: 'flex-end',
         backgroundColor: Color.primary[900]
       }}>
         <View style={{
@@ -235,15 +248,7 @@ export default function Home({ navigation, route }) {
           flexDirection: 'row',
           alignItems: 'center'
         }}>
-          <TouchableOpacity onPress={() => {
-            PushNotification.localNotification({
-              /* Android Only Properties */
-              channelId: 'Youthology', // (required) channelId, if the channel doesn't exist, notification will not trigger.
-              title: 'test', // (optional)
-              message: 'data', // (required)
-
-            });
-          }}>
+          <TouchableOpacity onPress={() => navigation.navigate('Account')}>
             <Image source={{
               uri: user.foto_user
             }} style={{
@@ -257,7 +262,7 @@ export default function Home({ navigation, route }) {
             flex: 1,
             ...fonts.headline4,
             color: Color.white[900]
-          }}>Halo, {user.nama_lengkap}</Text>
+          }}>Halo, {user.nama_lengkap.split(" ")[0]}</Text>
         </View>
         <View style={{
           flex: 0.6,
@@ -285,6 +290,8 @@ export default function Home({ navigation, route }) {
           </TouchableOpacity>
         </View>
       </View>
+
+
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* SEARCH */}
 
@@ -445,7 +452,6 @@ export default function Home({ navigation, route }) {
             return (
               <TouchableWithoutFeedback onPress={() => navigation.navigate('JadwalDetail', item)}>
                 <View style={{
-                  height: 80,
                   width: 288,
                   borderWidth: 1,
                   borderColor: Color.blueGray[400],
@@ -459,7 +465,6 @@ export default function Home({ navigation, route }) {
 
                   <View style={{
                     backgroundColor: Color.white[900],
-                    height: 80,
                     borderRadius: 12,
                     width: 280,
                     left: 8,
@@ -470,11 +475,18 @@ export default function Home({ navigation, route }) {
                       alignItems: 'center',
                       marginBottom: 4,
                     }}>
-                      <Text style={{
-                        ...fonts.headline5,
+                      <View style={{
                         flex: 1,
-                        color: Color.blueGray[900],
-                      }}>{item.nama_perawatan}</Text>
+                      }}>
+                        <Text style={{
+                          ...fonts.headline5,
+                          color: Color.blueGray[900],
+                        }}>{item.nama_dokter}</Text>
+                        <Text style={{
+                          ...fonts.body3,
+                          color: Color.primary[900],
+                        }}>{item.perawatan}</Text>
+                      </View>
                       <MyIcon name='calendar-mark' size={24} color={index % 2 == 1 ? Color.secondary[900] : Color.primary[900]} />
                     </View>
 
@@ -499,7 +511,7 @@ export default function Home({ navigation, route }) {
                         ...fonts.caption1,
                         marginLeft: 4,
                         color: Color.blueGray[400]
-                      }}>{moment(moment().format('YYYY-MM-DD ' + item.jam_janji)).format('HH:mm')} - {moment(moment().format('YYYY-MM-DD ' + item.jam_janji)).add(1, 'hours').format('HH:mm')}</Text>
+                      }}>{item.jam_janji}</Text>
 
                     </View>
 
@@ -655,7 +667,13 @@ export default function Home({ navigation, route }) {
 
           <TouchableOpacity onPress={() => {
             setModalVisible2(false);
-            setModalVisible(true);
+            storeData('banner', {
+              open: false
+            })
+            if (user.cekin !== moment().format('YYYY-MM-DD')) {
+              setModalVisible(true)
+            }
+
           }} style={{
             padding: 10,
           }}>

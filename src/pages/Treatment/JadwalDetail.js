@@ -1,8 +1,8 @@
-import { StatusBar, Image, ImageBackground, SafeAreaView, StyleSheet, Text, View, TouchableWithoutFeedback, TextInput, ScrollView, TouchableOpacity, ActivityIndicator, Linking } from 'react-native'
+import { StatusBar, Image, ImageBackground, SafeAreaView, StyleSheet, Text, View, TouchableWithoutFeedback, TextInput, ScrollView, TouchableOpacity, ActivityIndicator, Linking, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Color, fonts, windowHeight } from '../../utils'
-import { apiURL, api_token, getData, storeData } from '../../utils/localStorage'
-import { MyButton, MyCalendar, MyGap, MyHeader, MyHeaderPoint, MyIcon, MyInput, MyPicker } from '../../components';
+import { MYAPP, apiURL, api_token, getData, storeData } from '../../utils/localStorage'
+import { MyButton, MyCalendar, MyGap, MyHeader, MyHeaderPoint, MyIcon, MyInput, MyLoading, MyPicker } from '../../components';
 
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import moment from 'moment';
@@ -14,14 +14,38 @@ import Modal from "react-native-modal";
 import { Icon } from 'react-native-elements';
 
 export default function JadwalDetail({ navigation, route }) {
+    const toast = useToast();
     const [kirim, setKirim] = useState(route.params);
     const [comp, setComp] = useState({});
+    const [loading, setLoading] = useState(false);
     useEffect(() => {
         axios.post(apiURL + 'company').then(res => {
             console.log(res.data.data)
             setComp(res.data.data)
         })
     }, []);
+
+    const sendBatal = () => {
+
+        setLoading(true);
+        console.log(kirim.id);
+        axios.post(apiURL + 'appointment_cancel', {
+            id: kirim.id
+        }).then(res => {
+            console.log(res.data);
+            if (res.data.status == 200) {
+                toast.show(res.data.message, {
+                    type: 'success'
+                });
+                setKirim({
+                    ...kirim,
+                    status_appointment: 'Dibatalkan'
+                });
+                setLoading(false);
+            }
+        })
+
+    }
     return (
         <SafeAreaView style={{
             flex: 1,
@@ -50,21 +74,22 @@ export default function JadwalDetail({ navigation, route }) {
                             <View style={{
                                 left: 8
                             }}>
+
                                 <Text style={{
                                     ...fonts.headline5,
-                                    color: Color.blueGray[900],
-                                }}>{kirim.nama_perawatan}</Text>
-                                <Text style={{
-                                    ...fonts.body3,
                                     color: Color.blueGray[400],
                                 }}>{kirim.nama_dokter}</Text>
+                                <Text style={{
+                                    ...fonts.body3,
+                                    color: Color.blueGray[900],
+                                }}>{kirim.perawatan}</Text>
                             </View>
                         </View>
                         <Text style={{
                             marginTop: 12,
                             ...fonts.body3,
                             color: Color.blueGray[400],
-                        }}>ID:#YAC{kirim.id}</Text>
+                        }}>ID:#{kirim.kode}</Text>
                         <TouchableOpacity onPress={() => {
                             Linking.openURL(comp.website)
                         }}>
@@ -274,6 +299,29 @@ export default function JadwalDetail({ navigation, route }) {
                         </View>
 
                     </View>
+
+                    <MyGap jarak={20} />
+
+                    {kirim.status_appointment !== 'Dibatalkan' && <MyButton onPress={() => navigation.navigate('JadwalEdit', kirim)} title="Jadwalkan Ulang" />}
+
+                    <MyGap jarak={20} />
+
+                    {!loading && kirim.status_appointment !== 'Dibatalkan' &&
+
+                        <MyButton title="Batalkan" backgroundColor={Color.red[500]} onPress={() => {
+                            Alert.alert(MYAPP, 'Apakah kamu yakin akan batalkan jadwal ini ?', [
+                                {
+                                    text: 'TIDAK'
+                                },
+                                {
+                                    text: 'Ya, Batalkan',
+                                    onPress: sendBatal
+                                }
+                            ])
+                        }} />
+                    }
+
+                    {loading && <MyLoading />}
 
 
 

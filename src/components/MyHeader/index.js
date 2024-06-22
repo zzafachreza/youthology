@@ -37,7 +37,7 @@ export default function MyHeader({ onPress, color = Color.blueGray[900], title, 
       marginTop: 16,
       marginHorizontal: 18,
       flexDirection: 'row',
-      alignItems: 'center',
+      alignItems: 'flex-end',
       paddingVertical: 16,
     }}>
       <TouchableOpacity onPress={() => navigation.goBack()} style={{

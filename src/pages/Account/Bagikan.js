@@ -9,6 +9,7 @@ import moment from 'moment';
 import DatePicker from 'react-native-datepicker'
 import { maskJs, maskCurrency } from 'mask-js';
 import { useToast } from "react-native-toast-notifications";
+import Tiktok from '../../assets/Tiktok.svg'
 import axios from 'axios';
 import { Icon } from 'react-native-elements';
 export default function Bagikan({ navigation, route }) {
@@ -23,45 +24,50 @@ export default function Bagikan({ navigation, route }) {
                 flex: 1,
                 padding: 16
             }}>
-                <View style={{
-                    flex: 1,
-                    marginBottom: 12,
-
-                }}>
-                    <Image source={require('../../assets/bagikan.png')} style={{
-                        width: 340,
-                        height: 500,
-                        resizeMode: 'contain',
-                        alignSelf: 'center'
-                    }} />
-
-                </View>
                 <TouchableOpacity
-                    onPress={() => Linking.openURL('https://tr.ee/ca5OvMegvx')}
-                    style={
-                        {
-                            alignSelf: 'center',
-                            width: 340,
-                            height: 42,
-                            borderRadius: 12,
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            backgroundColor: Color.primary[900],
-                            flexDirection: 'row',
-
-                        }
-                    }
+                    onPress={() => Linking.openURL('https://www.instagram.com/youthologyclinic/')}
+                    style={styles.btnSocial}
                 >
-                    <Icon type='ionicon' name='thumbs-up' color={Color.white[900]} size={20} />
-                    <Text
-                        style={{
-                            left: 5,
-                            ...fonts.headline5,
-                            color: Color.white[900]
-                        }}>
-                        Ikuti Kami
+                    <Icon type='ionicon' name='logo-instagram' color={Color.white[900]} size={20} />
+                    <Text style={styles.textSocial}>
+                        Instagram
                     </Text>
                 </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => Linking.openURL('https://www.tiktok.com/@youthologyclinic')}
+                    style={styles.btnSocial}
+                >
+                    <Tiktok fill="white" width={20} height={20} />
+                    <Text
+                        style={styles.textSocial}>
+                        Tiktok
+                    </Text>
+                </TouchableOpacity>
+
+
+                <TouchableOpacity
+                    onPress={() => Linking.openURL('https://www.youtube.com/channel/UCuP37QIrgIgEaILL9zyT-fg')}
+                    style={styles.btnSocial}
+                >
+                    <Icon type='ionicon' name='logo-youtube' color={Color.white[900]} size={20} />
+                    <Text
+                        style={styles.textSocial}>
+                        Youtube
+                    </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    onPress={() => Linking.openURL('https://api.whatsapp.com/send/?phone=6287880006776')}
+                    style={styles.btnSocial}
+                >
+                    <Icon type='ionicon' name='logo-whatsapp' color={Color.white[900]} size={20} />
+                    <Text
+                        style={styles.textSocial}>
+                        Whatsapp
+                    </Text>
+                </TouchableOpacity>
+
+
                 {/* <MyGap jarak={10} />
                 <TouchableOpacity
                     onPress={() => Linking.openURL('https://tr.ee/ca5OvMegvx')}
@@ -90,8 +96,26 @@ export default function Bagikan({ navigation, route }) {
                     </Text>
                 </TouchableOpacity> */}
             </View>
-        </SafeAreaView>
+        </SafeAreaView >
     )
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    btnSocial: {
+        alignSelf: 'center',
+        width: '100%',
+        height: windowHeight / 7,
+        borderRadius: 12,
+        marginVertical: 12,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: Color.primary[900],
+        flexDirection: 'row',
+
+    },
+    textSocial: {
+        left: 5,
+        ...fonts.headline3,
+        color: Color.white[900]
+    }
+})

@@ -30,6 +30,7 @@ import Otp from './Login/Otp';
 import Lupa from './Login/Lupa';
 import Reset from './Login/Reset';
 import JadwalSaya from './Account/JadwalSaya';
+import JadwalEdit from './Treatment/JadwalEdit';
 
 
 
@@ -69,5 +70,6 @@ export {
   Otp,
   Lupa,
   Reset,
-  JadwalSaya
+  JadwalSaya,
+  JadwalEdit
 };

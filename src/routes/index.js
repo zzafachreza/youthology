@@ -35,7 +35,8 @@ import {
   Lupa,
   Otp,
   Reset,
-  JadwalSaya
+  JadwalSaya,
+  JadwalEdit
 } from '../pages';
 import { colors } from '../utils';
 import { Icon } from 'react-native-elements';
@@ -302,6 +303,16 @@ export default function Router() {
       <Stack.Screen
         name="JadwalSaya"
         component={JadwalSaya}
+        options={{
+          headerShown: false,
+        }}
+      />
+
+
+
+      <Stack.Screen
+        name="JadwalEdit"
+        component={JadwalEdit}
         options={{
           headerShown: false,
         }}

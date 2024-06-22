@@ -13,10 +13,12 @@ import axios from 'axios';
 import Spinner from 'react-native-spinkit';
 import { Icon } from 'react-native-elements';
 import { useIsFocused } from '@react-navigation/native';
+import { FlatList } from 'react-native';
 
 export default function CSAdmin({ navigation, route }) {
 
     const [loading, setLoading] = useState(false);
+    const toast = useToast();
 
     const [kirim, setKirim] = useState({
         nama_lengkap: '',
@@ -50,17 +52,33 @@ export default function CSAdmin({ navigation, route }) {
     const sendServer = () => {
         let doktmp = dokter.filter(i => i.id == kirim.fid_dokter);
 
-        console.log({
-            ...kirim,
-            dokter: dokter.filter(i => i.id == kirim.fid_dokter)[0].label,
-            perawatan: perawatan.filter(i => i.id == kirim.fid_perawatan)[0].label
-        })
-        // console.log(doktmp)
-        navigation.navigate('CSAdminJadwal', {
-            ...kirim,
-            dokter: dokter.filter(i => i.id == kirim.fid_dokter)[0].label,
-            perawatan: perawatan.filter(i => i.id == kirim.fid_perawatan)[0].label
-        })
+        if (perawatan.filter(i => i.cek > 0).length == 0) {
+            toast.show('Minimal pilih 1 jenis perawatan', {
+                type: 'danger'
+            })
+        } else if (kirim.nama_lengkap.length == 0) {
+            toast.show('Nama lengkap wajib di isi', {
+                type: 'danger'
+            })
+        } else if (kirim.telepon.length == 0) {
+            toast.show('Nomor telepon wajib di isi', {
+                type: 'danger'
+            })
+        } else {
+            console.log({
+                ...kirim,
+                dokter: dokter.filter(i => i.id == kirim.fid_dokter)[0].label,
+                perawatan: perawatan.filter(i => i.cek > 0)
+            })
+            // console.log(doktmp)
+            navigation.navigate('CSAdminJadwal', {
+                ...kirim,
+                dokter: dokter.filter(i => i.id == kirim.fid_dokter)[0].label,
+                perawatan: perawatan.filter(i => i.cek > 0)
+            })
+        }
+
+
     }
 
     const [user, setUser] = useState({})
@@ -275,14 +293,51 @@ export default function CSAdmin({ navigation, route }) {
 
                     <MyGap jarak={20} />
                     {/* Jenis Perawatan */}
-                    <MyPicker value={kirim.fid_perawatan} iconname='cosmetic' label="Jenis Perawatan" onValueChange={x => {
+                    {/* <MyPicker value={kirim.fid_perawatan} iconname='cosmetic' label="Jenis Perawatan" onValueChange={x => {
                         setKirim({
                             ...kirim,
                             fid_perawatan: x
                         })
-                    }} data={perawatan} />
+                    }} data={perawatan} /> */}
                     <MyGap jarak={20} />
                     {/* Jenis Perawatan */}
+                    <Text
+                        style={{
+                            ...fonts.subheadline3,
+                            color: Color.blueGray[900],
+                            marginBottom: 8,
+                        }}>
+                        Jenis Perawatan
+                    </Text>
+
+                    <FlatList contentContainerStyle={{
+                        justifyContent: 'space-evenly'
+                    }} data={perawatan} numColumns={2} renderItem={({ item, index }) => {
+                        return (
+                            <TouchableOpacity onPress={() => {
+                                let temp = [...perawatan]
+                                temp[index].cek = temp[index].cek > 0 ? 0 : 1;
+                                setPerawatan(temp)
+                            }} style={{
+                                flex: 1,
+                                borderWidth: 1,
+                                borderRadius: 8,
+                                borderColor: item.cek > 0 ? Color.primary[900] : Color.blueGray[300],
+                                padding: 10,
+                                margin: 5,
+
+                                flexDirection: 'row'
+                            }}>
+                                <Text style={{
+                                    flex: 1,
+                                    ...fonts.body3,
+                                    color: Color.blueGray[900],
+                                }}>{item.nama_perawatan}</Text>
+                                <Icon type='ionicon' name={item.cek > 0 ? 'checkmark-circle' : 'checkmark-circle-outline'} color={item.cek > 0 ? Color.primary[900] : Color.blueGray[300]} />
+                            </TouchableOpacity>
+                        )
+                    }} />
+                    <MyGap jarak={20} />
                     <MyPicker iconname='stethoscope' label="Pilih Dokter" onValueChange={x => {
                         setKirim({
                             ...kirim,

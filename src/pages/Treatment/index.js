@@ -101,7 +101,7 @@ export default function Treatment({ navigation, route = {
             <MyHeaderPoint title='Perawatan' />
 
             {/* BATAS HEADER */}
-            <View style={{
+            {/* <View style={{
                 marginVertical: 8,
                 marginHorizontal: 16,
                 borderRadius: 12,
@@ -139,7 +139,7 @@ export default function Treatment({ navigation, route = {
                         }}>Jadwal Saya</Text>
                     </View>
                 </TouchableWithoutFeedback>
-            </View>
+            </View> */}
 
             {/* SUB HALAMAN TREATMENT */}
             {/* TREATMENT */}
@@ -249,8 +249,8 @@ export default function Treatment({ navigation, route = {
 
             {loadingArtikel && <MyLoading />}
             {/* JADWAL */}
-            {pilih === 1 &&
-                <View style={{
+
+            {/* <View style={{
                     padding: 16
                 }}>
 
@@ -374,8 +374,8 @@ export default function Treatment({ navigation, route = {
                     }} />}
 
                     {loading && <MyLoading />}
-                </View>
-            }
+                </View> */}
+
         </SafeAreaView>
     )
 }

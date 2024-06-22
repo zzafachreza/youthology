@@ -1,4 +1,4 @@
-import { StatusBar, Image, ImageBackground, SafeAreaView, StyleSheet, Text, View, TouchableWithoutFeedback, TextInput, ScrollView, TouchableOpacity, ActivityIndicator, Linking } from 'react-native'
+import { StatusBar, Image, ImageBackground, SafeAreaView, StyleSheet, Text, View, TouchableWithoutFeedback, TextInput, ScrollView, TouchableOpacity, ActivityIndicator, Linking, FlatList } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Color, fonts, windowHeight } from '../../utils'
 import { apiURL, api_token, getData, storeData } from '../../utils/localStorage'
@@ -29,9 +29,14 @@ export default function CSAdminKonfirmasi({ navigation, route }) {
             console.log(res.data);
 
             let WATemplate = `*JADWAL JANJI TEMU*%0A%0A`;
-            WATemplate += `Jenis Perawatan = ${kirim.perawatan}%0A`;
-            WATemplate += `Dokter = ${kirim.dokter}%0A%0A`;
-            WATemplate += `Nama Lengkap = ${kirim.nama_lengkap}%0A`;
+            WATemplate += `Dokter = ${kirim.dokter}%0A`;
+            WATemplate += `Jenis Perawatan %0A`;
+            kirim.perawatan.map((i, idx) => {
+                WATemplate += `*- ${i.nama_perawatan}*%0A`;
+            })
+
+
+            WATemplate += `%0ANama Lengkap = ${kirim.nama_lengkap}%0A`;
             WATemplate += `Jenis Kelamin = ${kirim.jenis_kelamin}%0A`;
             WATemplate += `Tanggal Lahir = ${kirim.tanggal_lahir}%0A`;
             WATemplate += `Nomor Telepon = ${kirim.telepon}%0A`;
@@ -83,12 +88,26 @@ export default function CSAdminKonfirmasi({ navigation, route }) {
                             }}>
                                 <Text style={{
                                     ...fonts.headline5,
-                                    color: Color.blueGray[900],
-                                }}>{kirim.perawatan}</Text>
-                                <Text style={{
-                                    ...fonts.body3,
                                     color: Color.blueGray[400],
                                 }}>{kirim.dokter}</Text>
+
+                                <FlatList data={kirim.perawatan} renderItem={({ item, index }) => {
+                                    return (
+                                        <View style={{
+                                            marginVertical: 2,
+                                            flexDirection: 'row',
+                                            alignItems: 'center'
+                                        }}>
+                                            <Icon type='ionicon' name='bookmark' color={Color.blueGray[900]} size={14} />
+                                            <Text style={{
+                                                marginLeft: 5,
+                                                ...fonts.headline5,
+                                                color: Color.blueGray[900],
+                                            }}>{item.nama_perawatan}</Text>
+                                        </View>
+                                    )
+                                }} />
+
                             </View>
                         </View>
                         <View style={{

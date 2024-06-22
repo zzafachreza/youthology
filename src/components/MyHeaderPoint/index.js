@@ -9,7 +9,9 @@ import axios from 'axios';
 
 export default function MyHeaderPoint({ title = 'CS Admin', level }) {
     const navigation = useNavigation();
-    const [user, setUser] = useState({});
+    const [user, setUser] = useState({
+        nama_lengkap: 'Nama Saya'
+    });
     const isFocus = useIsFocused();
     useEffect(() => {
         if (isFocus) {
@@ -32,10 +34,10 @@ export default function MyHeaderPoint({ title = 'CS Admin', level }) {
 
     return (
         <View style={{
-            height: 80,
+            height: 100,
             backgroundColor: Color.primary[900],
             flexDirection: 'row',
-            alignItems: 'center',
+            alignItems: 'flex-end',
             padding: 16
         }}>
             <Text style={{

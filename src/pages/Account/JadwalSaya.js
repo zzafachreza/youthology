@@ -109,7 +109,7 @@ export default function JadwalSaya({ navigation, route }) {
                         <TouchableWithoutFeedback onPress={() => navigation.navigate('JadwalDetail', item)}>
                             <View style={{
                                 marginBottom: 12,
-                                height: 80,
+                                // height: 80,
                                 width: '100%',
                                 borderWidth: 1,
                                 borderColor: Color.blueGray[400],
@@ -120,7 +120,7 @@ export default function JadwalSaya({ navigation, route }) {
                             }}>
                                 <View style={{
                                     backgroundColor: Color.white[900],
-                                    height: 80,
+                                    // height: 80,
                                     borderRadius: 12,
                                     width: '100%',
                                     left: 8,
@@ -131,11 +131,18 @@ export default function JadwalSaya({ navigation, route }) {
                                         alignItems: 'center',
                                         marginBottom: 4,
                                     }}>
-                                        <Text style={{
-                                            ...fonts.headline5,
+                                        <View style={{
                                             flex: 1,
-                                            color: Color.blueGray[900],
-                                        }}>{item.nama_perawatan}</Text>
+                                        }}>
+                                            <Text style={{
+                                                ...fonts.headline5,
+                                                color: Color.blueGray[900],
+                                            }}>{item.nama_dokter}</Text>
+                                            <Text style={{
+                                                ...fonts.body3,
+                                                color: Color.primary[900],
+                                            }}>{item.perawatan}</Text>
+                                        </View>
                                         <MyIcon name='calendar-mark' size={24} color={index % 2 == 1 ? Color.secondary[900] : Color.primary[900]} />
                                     </View>
 
@@ -160,7 +167,7 @@ export default function JadwalSaya({ navigation, route }) {
                                             ...fonts.caption1,
                                             marginLeft: 4,
                                             color: Color.blueGray[400]
-                                        }}>{moment(moment().format('YYYY-MM-DD ' + item.jam_janji)).format('HH:mm')} - {moment(moment().format('YYYY-MM-DD ' + item.jam_janji)).add(1, 'hours').format('HH:mm')}</Text>
+                                        }}>{item.jam_janji}</Text>
 
                                     </View>
                                 </View>
