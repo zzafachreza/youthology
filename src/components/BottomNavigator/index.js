@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,9 @@ import { Icon } from 'react-native-elements';
 import { Color, colors } from '../../utils/colors';
 import { DimensionThisPhone, fonts } from '../../utils';
 import MyIcon from '../MyIcon';
+import { useEffect } from 'react';
+import axios from 'axios';
+import { apiURL } from '../../utils/localStorage';
 
 export default function BottomNavigator({ state, descriptors, navigation }) {
   const focusedOptions = descriptors[state.routes[state.index].key].options;
@@ -18,6 +21,21 @@ export default function BottomNavigator({ state, descriptors, navigation }) {
   const windowHeight = Dimensions.get('window').height;
   if (focusedOptions.tabBarVisible === false) {
     return null;
+  }
+
+
+  const [kulit, setKulit] = useState({})
+  useEffect(() => {
+    __GetDataKulit();
+  }, []);
+
+  const __GetDataKulit = () => {
+    axios.post(apiURL + 'artikel', {
+      tipe: 'Masalah Kulit'
+    }).then(res => {
+
+      setKulit(res.data[0])
+    })
   }
 
   return (
@@ -48,9 +66,7 @@ export default function BottomNavigator({ state, descriptors, navigation }) {
 
           if (!isFocused && !event.defaultPrevented) {
             if (label == 'Treatment') {
-              navigation.navigate(route.name, {
-                open: 'Treatment'
-              });
+              navigation.navigate(route.name, kulit);
             } else {
               navigation.navigate(route.name);
             }

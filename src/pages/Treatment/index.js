@@ -12,7 +12,7 @@ import FastImage from 'react-native-fast-image'
 import { useIsFocused } from '@react-navigation/native';
 export default function Treatment({ navigation, route }) {
     const [item, setItem] = useState(route.params);
-    console.log(item)
+    console.log(item);
     const systemFonts = [fonts.body3.fontFamily, fonts.headline4.fontFamily];
     const [loading, setLoading] = useState(false);
     const [KETERANGAN, setKETERAGAN] = useState('');
@@ -43,7 +43,7 @@ export default function Treatment({ navigation, route }) {
             setItem(res.data);
             setTimeout(() => {
                 setLoading(false)
-            }, 1000)
+            }, 500)
         })
     }
 
@@ -72,7 +72,7 @@ export default function Treatment({ navigation, route }) {
         }}>
             <MyHeaderPoint title='Perawatan' />
 
-            <ScrollView showsVerticalScrollIndicator={false}>
+            {!loading && <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={{
                     padding: 16,
                 }}>
@@ -159,8 +159,8 @@ export default function Treatment({ navigation, route }) {
 
                     />
 
-                    {loading && <MyLoading />}
-                    {!loading && <RenderHtml
+
+                    <RenderHtml
                         onHTMLLoaded={() => {
                             setLoading(false)
                         }}
@@ -176,12 +176,14 @@ export default function Treatment({ navigation, route }) {
                         source={{
                             html: item.keterangan
                         }}
-                    />}
+                    />
 
 
 
                 </View>
-            </ScrollView>
+            </ScrollView>}
+
+            {loading && <MyLoading />}
         </SafeAreaView>
     )
 }
