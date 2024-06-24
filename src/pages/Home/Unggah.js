@@ -77,6 +77,7 @@ export default function Unggah({ navigation, route }) {
                     }}>
                         <MyIcon name='info-square' color={Color.yellow[500]} size={24} />
                         <Text style={{
+                            maxWidth: '80%',
                             marginLeft: 12,
                             ...fonts.body3,
                             color: Color.blueGray[900]

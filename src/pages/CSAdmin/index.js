@@ -14,12 +14,13 @@ import Spinner from 'react-native-spinkit';
 import { Icon } from 'react-native-elements';
 import { useIsFocused } from '@react-navigation/native';
 import { FlatList } from 'react-native';
+import Modal from "react-native-modal";
 
 export default function CSAdmin({ navigation, route }) {
 
     const [loading, setLoading] = useState(false);
     const toast = useToast();
-
+    const [isVisible, setModalVisible] = useState(false);
     const [kirim, setKirim] = useState({
         nama_lengkap: '',
         telepon: '',
@@ -310,31 +311,55 @@ export default function CSAdmin({ navigation, route }) {
                         Jenis Perawatan
                     </Text>
 
+                    <TouchableOpacity onPress={() => {
+                        setModalVisible(true);
+                    }}>
+                        <View style={{
+                            height: 50,
+                            borderWidth: 1,
+                            borderColor: Color.blueGray[300],
+                            backgroundColor: Color.white[900],
+                            borderRadius: 8,
+                            padding: 12,
+                            flexDirection: 'row',
+                            alignItems: 'center'
+                        }}>
+                            <MyIcon name='cosmetic' size={20} color={Color.blueGray[300]} />
+                            <Text style={{
+                                ...fonts.body3,
+                                left: 8,
+                                color: Color.blueGray[400],
+                            }}>Pilih Perawatan</Text>
+                        </View>
+                    </TouchableOpacity>
+
                     <FlatList contentContainerStyle={{
                         justifyContent: 'space-evenly'
-                    }} data={perawatan} numColumns={2} renderItem={({ item, index }) => {
+                    }} data={perawatan.filter(i => i.cek > 0)} numColumns={1} renderItem={({ item, index }) => {
                         return (
-                            <TouchableOpacity onPress={() => {
+                            <View onPress={() => {
                                 let temp = [...perawatan]
-                                temp[index].cek = temp[index].cek > 0 ? 0 : 1;
+                                temp[index].cek = 0;
                                 setPerawatan(temp)
                             }} style={{
                                 flex: 1,
-                                borderWidth: 1,
+                                // borderBottomWidth: 1,
                                 borderRadius: 8,
-                                borderColor: item.cek > 0 ? Color.primary[900] : Color.blueGray[300],
-                                padding: 10,
-                                margin: 5,
+                                paddingHorizontal: 10,
+                                // margin: 5,
+                                marginTop: 4,
 
                                 flexDirection: 'row'
                             }}>
+                                <Icon type='ionicon' name='bookmark' color={Color.primary[900]} />
                                 <Text style={{
                                     flex: 1,
+                                    marginLeft: 5,
                                     ...fonts.body3,
                                     color: Color.blueGray[900],
                                 }}>{item.nama_perawatan}</Text>
-                                <Icon type='ionicon' name={item.cek > 0 ? 'checkmark-circle' : 'checkmark-circle-outline'} color={item.cek > 0 ? Color.primary[900] : Color.blueGray[300]} />
-                            </TouchableOpacity>
+
+                            </View>
                         )
                     }} />
                     <MyGap jarak={20} />
@@ -418,6 +443,79 @@ export default function CSAdmin({ navigation, route }) {
 
                 </View>
             </ScrollView>
+            <Modal style={{
+                margin: 0,
+            }} isVisible={isVisible}
+                backdropOpacity={0.5}
+                animationIn="fadeIn"
+                animationOut="fadeOut"
+                onRequestClose={() => {
+
+                    setModalVisible(!isVisible);
+                }}>
+                <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+                    <View style={{
+                        height: windowHeight / 1.2,
+                        backgroundColor: Color.white[900],
+                        borderTopRightRadius: 32,
+                        borderTopLeftRadius: 32,
+                        paddingTop: 24,
+                        paddingHorizontal: 18
+                    }}>
+                        <View style={{
+                            flexDirection: 'row',
+                            alignItems: 'center'
+                        }}>
+                            <Text style={{
+                                flex: 1,
+                                ...fonts.headline4,
+                                color: Color.blueGray[900],
+                            }}>Jenis Perawatan</Text>
+                            <TouchableOpacity onPress={() => {
+                                setModalVisible(false)
+
+                            }}>
+                                <Icon type='ionicon' size={24} name='close-circle' color={Color.blueGray[400]} />
+                            </TouchableOpacity>
+
+                        </View>
+                        <View style={{
+                            flex: 1,
+                            padding: 16,
+                        }}>
+                            <FlatList contentContainerStyle={{
+                                justifyContent: 'space-evenly'
+                            }} data={perawatan} numColumns={1} renderItem={({ item, index }) => {
+                                return (
+                                    <TouchableOpacity onPress={() => {
+                                        let temp = [...perawatan]
+                                        temp[index].cek = temp[index].cek > 0 ? 0 : 1;
+                                        setPerawatan(temp)
+                                    }} style={{
+                                        flex: 1,
+                                        borderWidth: 1,
+                                        borderRadius: 8,
+                                        borderColor: item.cek > 0 ? Color.primary[900] : Color.blueGray[300],
+                                        padding: 10,
+                                        margin: 5,
+
+                                        flexDirection: 'row'
+                                    }}>
+                                        <Text style={{
+                                            flex: 1,
+                                            ...fonts.body3,
+                                            color: Color.blueGray[900],
+                                        }}>{item.nama_perawatan}</Text>
+                                        <Icon type='ionicon' name={item.cek > 0 ? 'checkmark-circle' : 'checkmark-circle-outline'} color={item.cek > 0 ? Color.primary[900] : Color.blueGray[300]} />
+                                    </TouchableOpacity>
+                                )
+                            }} />
+                        </View>
+
+
+                    </View>
+                </View>
+            </Modal>
         </SafeAreaView>
     )
 }

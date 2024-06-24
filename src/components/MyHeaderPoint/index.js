@@ -6,6 +6,7 @@ import { Icon } from 'react-native-elements';
 import { apiURL, getData } from '../../utils/localStorage';
 import MyIcon from '../MyIcon';
 import axios from 'axios';
+import FastImage from 'react-native-fast-image'
 
 export default function MyHeaderPoint({ title = 'CS Admin', level }) {
     const navigation = useNavigation();
@@ -52,7 +53,7 @@ export default function MyHeaderPoint({ title = 'CS Admin', level }) {
                 alignItems: 'center'
             }}>
                 <TouchableOpacity onPress={() => navigation.navigate('Member')}>
-                    <Image source={user.member == 'Silver' ? require('../../assets/badgeSilver.png') : user.member == 'Gold' ? require('../../assets/badgeGold.png') : require('../../assets/badgePlatinum.png')} style={{
+                    <FastImage source={user.member == 'Silver' ? require('../../assets/badgeSilver.png') : user.member == 'Gold' ? require('../../assets/badgeGold.png') : require('../../assets/badgePlatinum.png')} style={{
                         width: 100,
                         resizeMode: 'contain',
                         height: 35

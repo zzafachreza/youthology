@@ -69,7 +69,7 @@ export default function JadwalSaya({ navigation, route }) {
 
 
                             if (x.length > 0) {
-                                let TMPSrc = dataJawdal.filter(i => i.nama_perawatan.toLowerCase().indexOf(x.toLowerCase()) > -1);
+                                let TMPSrc = dataJawdal.filter(i => i.perawatan.toLowerCase().indexOf(x.toLowerCase()) > -1);
                                 if (TMPSrc.length > 0) {
                                     setDataJadwal(TMPSrc);
                                 }

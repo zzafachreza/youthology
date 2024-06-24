@@ -10,10 +10,8 @@ import axios from 'axios';
 import RenderHtml from 'react-native-render-html';
 import { useIsFocused } from '@react-navigation/native';
 
-export default function Treatment({ navigation, route = {
-    open: 'Perawatan'
-} }) {
-    const [pilih, setPilih] = useState(route.params.open == 'Jadwal' ? 1 : 0);
+export default function Treatment({ navigation, route }) {
+    const [pilih, setPilih] = useState(0);
     const systemFonts = [fonts.body3.fontFamily, fonts.headline4.fontFamily];
     const [dataKulit, setDataKulit] = useState([
         {
@@ -54,7 +52,7 @@ export default function Treatment({ navigation, route = {
         }
     ]);
 
-    const [selectKulit, setSelectKulit] = useState(0);
+    const [selectKulit, setSelectKulit] = useState(1);
     const [loading, setLoading] = useState(true);
     const [loadingArtikel, setLoadingArtikel] = useState(true);
     const isFocus = useIsFocused();
@@ -62,35 +60,23 @@ export default function Treatment({ navigation, route = {
     useEffect(() => {
         if (isFocus) {
             __GetDataKulit();
-            __getJadwal();
         }
     }, [isFocus]);
-    const __getJadwal = () => {
-        setLoading(true)
-        getData('user').then(uu => {
-            axios.post(apiURL + 'appointment', {
-                fid_user: uu.id
-            }).then(res => {
-                console.log('jadwal', res.data);
-                setDataJadwal(res.data);
-                setLoading(false)
-            })
-        })
-    }
+
     const __GetDataKulit = () => {
-        setLoadingArtikel(true);
+        // setLoadingArtikel(true);
         axios.post(apiURL + 'artikel_perawatan', {
             tipe: 'Masalah Kulit'
         }).then(res => {
             console.log(res.data);
             let TMP = [...res.data];
             res.data.map((itm, idx) => {
-                TMP[idx].cek = idx == 0 ? 1 : 0
+                TMP[idx].cek = itm.judul == route.params.judul ? 1 : 0
             })
-            setDataKulit(TMP);
-            setLoadingArtikel(false)
-        }).finally(() => {
+            setDataKulit(TMP.sort((a, b) => a.cek < b.cek));
 
+        }).finally(() => {
+            setLoadingArtikel(false)
         })
     }
     return (
@@ -101,45 +87,7 @@ export default function Treatment({ navigation, route = {
             <MyHeaderPoint title='Perawatan' />
 
             {/* BATAS HEADER */}
-            {/* <View style={{
-                marginVertical: 8,
-                marginHorizontal: 16,
-                borderRadius: 12,
-                padding: 4,
-                backgroundColor: Color.blueGray[50],
-                flexDirection: 'row'
-            }}>
-                <TouchableWithoutFeedback onPress={() => setPilih(0)}>
-                    <View style={{
-                        flex: 1,
-                        height: 35,
-                        borderRadius: 8,
-                        backgroundColor: pilih == 0 ? Color.white[900] : Color.blueGray[50],
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                    }}>
-                        <Text style={{
-                            ...fonts.subheadline3,
-                            color: pilih == 0 ? Color.blueGray[900] : Color.blueGray[500]
-                        }}>Perawatan</Text>
-                    </View>
-                </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback onPress={() => setPilih(1)}>
-                    <View style={{
-                        flex: 1,
-                        height: 35,
-                        borderRadius: 8,
-                        backgroundColor: pilih == 1 ? Color.white[900] : Color.blueGray[50],
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                    }}>
-                        <Text style={{
-                            ...fonts.subheadline3,
-                            color: pilih == 1 ? Color.blueGray[900] : Color.blueGray[500]
-                        }}>Jadwal Saya</Text>
-                    </View>
-                </TouchableWithoutFeedback>
-            </View> */}
+
 
             {/* SUB HALAMAN TREATMENT */}
             {/* TREATMENT */}
