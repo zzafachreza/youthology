@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Color, fonts } from '../../utils'
 import { StatusBar } from 'react-native'
 import { apiURL, getData, storeData } from '../../utils/localStorage';
-import { MyHeaderPoint, MyIcon } from '../../components';
+import { MyHeaderPoint, MyIcon, MyLoading } from '../../components';
 import { ImageBackground } from 'react-native';
 import moment from 'moment';
 import IconEdit from '../../assets/IconEdit.svg';
@@ -17,6 +17,7 @@ import axios from 'axios';
 export default function Account({ navigation, route }) {
     const [user, setUser] = useState({});
     const isFocus = useIsFocused();
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
         if (isFocus) {
             __GetUserProfile();
@@ -31,6 +32,7 @@ export default function Account({ navigation, route }) {
             }).then(res => {
                 console.log(res.data);
                 setUser(res.data);
+                setLoading(false);
             })
         })
     }
@@ -82,7 +84,9 @@ export default function Account({ navigation, route }) {
         }}>
             <MyHeaderPoint title='Akun Saya' />
 
-            <ScrollView>
+            {loading && <MyLoading />}
+
+            {!loading && <ScrollView>
                 <View style={{
                     padding: 16
                 }}>
@@ -174,7 +178,7 @@ export default function Account({ navigation, route }) {
 
 
                 </View>
-            </ScrollView>
+            </ScrollView>}
         </SafeAreaView>
     )
 }

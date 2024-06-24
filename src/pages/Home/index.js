@@ -169,8 +169,6 @@ export default function Home({ navigation, route }) {
 
   const _getPopup = () => {
     axios.post(apiURL + 'popup').then(res => {
-
-      console.log(res.data);
       setPOPUP(res.data);
     })
   }
@@ -210,7 +208,6 @@ export default function Home({ navigation, route }) {
         tmp.push((index + 1) * parseFloat(res.data))
 
       }
-      console.log(tmp);
       setREWARD(tmp);
     })
   }
@@ -391,9 +388,7 @@ export default function Home({ navigation, route }) {
             marginVertical: 10,
           }} data={dataKulit} numColumns={2} renderItem={({ item, index }) => {
             return (
-              <TouchableOpacity onPress={() => navigation.navigate('Treatment', {
-                judul: item.judul
-              })} style={{
+              <TouchableOpacity onPress={() => navigation.navigate('Treatment', item)} style={{
 
                 overflow: 'hidden'
               }}>

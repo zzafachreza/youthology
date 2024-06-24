@@ -10,28 +10,28 @@ import FastImage from 'react-native-fast-image'
 
 export default function MyHeaderPoint({ title = 'CS Admin', level }) {
     const navigation = useNavigation();
-    const [user, setUser] = useState({
-        nama_lengkap: 'Nama Saya'
-    });
-    const isFocus = useIsFocused();
-    useEffect(() => {
-        if (isFocus) {
-            __GetUserProfile()
-        }
+    // const [user, setUser] = useState({
+    //     nama_lengkap: 'Nama Saya'
+    // });
+    // const isFocus = useIsFocused();
+    // useEffect(() => {
+    //     if (isFocus) {
+    //         __GetUserProfile()
+    //     }
 
-    }, [isFocus]);
+    // }, [isFocus]);
 
 
-    const __GetUserProfile = () => {
-        getData('user').then(uu => {
-            axios.post(apiURL + 'user_data', {
-                id: uu.id
-            }).then(res => {
-                console.log(res.data);
-                setUser(res.data);
-            })
-        })
-    }
+    // const __GetUserProfile = () => {
+    //     getData('user').then(uu => {
+    //         axios.post(apiURL + 'user_data', {
+    //             id: uu.id
+    //         }).then(res => {
+    //             console.log(res.data);
+    //             setUser(res.data);
+    //         })
+    //     })
+    // }
 
     return (
         <View style={{
@@ -47,18 +47,18 @@ export default function MyHeaderPoint({ title = 'CS Admin', level }) {
                 color: Color.white[900]
             }}>{title}</Text>
             <View style={{
-                flex: 0.6,
+
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 alignItems: 'center'
             }}>
-                <TouchableOpacity onPress={() => navigation.navigate('Member')}>
+                {/* <TouchableOpacity onPress={() => navigation.navigate('Member')}>
                     <FastImage source={user.member == 'Silver' ? require('../../assets/badgeSilver.png') : user.member == 'Gold' ? require('../../assets/badgeGold.png') : require('../../assets/badgePlatinum.png')} style={{
                         width: 100,
                         resizeMode: 'contain',
                         height: 35
                     }} />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <TouchableOpacity onPress={() => navigation.navigate('Notifikasi')} style={{
                     width: 40,
                     height: 40,
