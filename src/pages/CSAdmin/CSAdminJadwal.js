@@ -10,9 +10,10 @@ import DatePicker from 'react-native-datepicker'
 import { maskJs, maskCurrency } from 'mask-js';
 import { useToast } from "react-native-toast-notifications";
 import axios from 'axios';
+import RNDateTimePicker from '@react-native-community/datetimepicker';
+import { Picker } from 'react-native-wheel-pick';
 
 export default function CSAdminJadwal({ navigation, route }) {
-
     const toast = useToast();
     const [loading, setLoading] = useState(false);
     const [kirim, setKirim] = useState(route.params);
@@ -111,7 +112,46 @@ export default function CSAdminJadwal({ navigation, route }) {
 
 
                     {!loading && <>
-                        <FlatList columnWrapperStyle={{
+
+                        <Picker
+                            style={{ backgroundColor: Color.white[900], width: '100%', height: 200 }}
+                            selectedValue={kirim.jam_janji}
+                            textSize={30}
+                            pickerData={waktu}
+                            selectLineSize={6}
+                            isShowSelectBackground={true}
+                            selectTextColor={Color.blueGray[900]}
+                            selectBackgroundColor={Color.primary[50] + 'AA'}
+                            // selectLineColor={Color.primary[50]}
+                            onValueChange={value => setKirim({
+                                ...kirim,
+                                jam_janji: value
+                            })}
+                        />
+                        {/* <View style={{
+                            marginVertical: 4,
+                            backgroundColor: Color.white[900],
+                            borderWidth: 1,
+                            borderRadius: 8,
+                            borderColor: Color.blueGray[300]
+                        }}>
+                            <View style={{
+                                position: 'absolute',
+                                left: 12,
+                                top: 13,
+                            }}>
+                                <MyIcon name="clock-square" color={Color.blueGray[300]} size={24} />
+                            </View>
+                            <Picker style={{ width: '90%', height: 50, left: 40, transform: [{ scale: 1 }] }}
+                            >
+                                {waktu.map(item => {
+                                    return <Picker.Item textStyle={{ fontSize: 12, ...fonts.body3, color: Color.blueGray[900], }} value={item.jam} label={item.jam} />;
+                                })}
+                            </Picker>
+                        </View> */}
+
+
+                        {/* <FlatList columnWrapperStyle={{
                             flexDirection: "row", justifyContent: "space-evenly", alignItems: "center", marginVertical: 4, flex: 1,
                         }} style={{
                             marginBottom: 20, flexGrow: 0
@@ -134,7 +174,7 @@ export default function CSAdminJadwal({ navigation, route }) {
                                     </View>
                                 </TouchableOpacity>
                             )
-                        }} />
+                        }} /> */}
                     </>}
 
                     {loading && <MyLoading />}
