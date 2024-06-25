@@ -308,9 +308,7 @@ export default function Home({ navigation, route }) {
             marginBottom: 12
           }}>Define Beauty, Define You</Text>
           <TouchableWithoutFeedback onPress={() => {
-            navigation.navigate('Treatment', {
-              open: 'Jadwal'
-            })
+            navigation.navigate('JadwalSaya')
           }}>
             <View style={{
               height: 50,
