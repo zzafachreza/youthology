@@ -20,6 +20,7 @@ export default function Register({ navigation, route }) {
         nama_lengkap: '',
         telepon: '',
         rekam_medis: '',
+        email: '',
         tanggal_lahir: moment().format('YYYY-MM-DD'),
         password: '',
         repassword: '',
@@ -29,28 +30,46 @@ export default function Register({ navigation, route }) {
 
     const sendServer = () => {
 
-        setLoading(true);
-        console.log(kirim);
-        axios.post(apiURL + 'register', kirim).then(res => {
-            console.log(res.data);
-            if (res.data.status == 200) {
-                toast.show(res.data.message, {
-                    type: 'success',
-                    id: 'zvl'
-                });
-                navigation.navigate('RegisterSuccess', {
-                    user: res.data.data
-                });
-                storeData('user', res.data.data)
-            } else {
-                toast.show(res.data.message, {
-                    type: 'error',
-                    id: 'zvl'
-                });
-            }
-        }).finally(() => {
-            setLoading(false);
-        })
+        if (kirim.telepon.length == 0) {
+            toast.show('Nomor telepon wajib di isi', {
+                type: 'danger'
+            })
+        } else if (kirim.email.length == 0) {
+            toast.show('Email wajib di isi', {
+                type: 'danger'
+            })
+        } else if (kirim.nama_lengkap.length == 0) {
+            toast.show('Nama lengkap wajib di isi', {
+                type: 'danger'
+            })
+        } else if (kirim.password.length == 0) {
+            toast.show('Kata sandi wajib di isi', {
+                type: 'danger'
+            })
+        } else {
+            setLoading(true);
+            console.log(kirim);
+            axios.post(apiURL + 'register', kirim).then(res => {
+                console.log(res.data);
+                if (res.data.status == 200) {
+                    toast.show(res.data.message, {
+                        type: 'success',
+                        id: 'zvl'
+                    });
+                    navigation.navigate('RegisterSuccess', {
+                        user: res.data.data
+                    });
+                    storeData('user', res.data.data)
+                } else {
+                    toast.show(res.data.message, {
+                        type: 'error',
+                        id: 'zvl'
+                    });
+                }
+            }).finally(() => {
+                setLoading(false);
+            })
+        }
 
     }
 
@@ -225,6 +244,43 @@ export default function Register({ navigation, route }) {
                                         rekam_medis: x
                                     })
                                 }} placeholderTextColor={Color.blueGray[400]} placeholder='Ketikkan nomor rekam medis' style={{
+                                    ...fonts.body3,
+                                    flex: 1,
+                                    paddingLeft: 44,
+                                    height: 50,
+                                    paddingHorizontal: 12,
+                                    color: Color.blueGray[900],
+                                    borderWidth: 1,
+                                    borderRadius: 8,
+                                    borderColor: Color.blueGray[300]
+                                }} />
+
+                            </View>
+                        </View>
+                        <MyGap jarak={20} />
+                        {/* Email */}
+                        <View>
+                            <Text style={{
+                                ...fonts.subheadline3,
+                                color: Color.blueGray[900],
+                                marginBottom: 8,
+                            }}>Email</Text>
+                            <View style={{
+                                height: 50,
+                            }}>
+                                <View style={{
+                                    position: 'absolute',
+                                    left: 12,
+                                    top: 13,
+                                }}>
+                                    <MyIcon name='letter' color={Color.blueGray[300]} size={24} />
+                                </View>
+                                <TextInput value={kirim.email} onChangeText={x => {
+                                    setKirim({
+                                        ...kirim,
+                                        email: x
+                                    })
+                                }} placeholderTextColor={Color.blueGray[400]} placeholder='Ketikkan email' style={{
                                     ...fonts.body3,
                                     flex: 1,
                                     paddingLeft: 44,

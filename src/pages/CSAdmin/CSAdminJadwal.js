@@ -19,16 +19,32 @@ export default function CSAdminJadwal({ navigation, route }) {
     const [kirim, setKirim] = useState(route.params);
 
     const [waktu, setWaktu] = useState([]);
+    const [info, setInfo] = useState('')
 
     useEffect(() => {
+        __getwaktu()
+    }, []);
+
+    const __getwaktu = (x = kirim.tanggal_janji) => {
         setLoading(true);
-        axios.post(apiURL + 'waktu').then(res => {
+        axios.post(apiURL + 'waktu', {
+            fid_dokter: route.params.fid_dokter,
+            tanggal_janji: x
+        }).then(res => {
             console.log(res.data);
-            setWaktu(res.data)
+
+            if (res.data.data.length > 0) {
+                setWaktu(res.data.data);
+                setInfo(res.data.informasi);
+            } else {
+                setInfo(res.data.informasi);
+                setWaktu([])
+            }
+            // setWaktu(res.data)
         }).finally(() => {
             setLoading(false);
         })
-    }, [])
+    }
 
 
     const sendServer = () => {
@@ -54,7 +70,7 @@ export default function CSAdminJadwal({ navigation, route }) {
                         ...fonts.headline4,
                         color: Color.blueGray[900],
                         marginBottom: 12,
-                    }}>Pilih tanggal dan jam melakukan perawatan</Text>
+                    }}>Pilih tanggal dan jam melakukan perawatan {route.params.dokter}</Text>
                     <View style={{
                         borderRadius: 12,
                         backgroundColor: Color.yellow[50],
@@ -93,7 +109,8 @@ export default function CSAdminJadwal({ navigation, route }) {
 
                         }}
                         onDayPress={x => {
-                            console.log(x)
+                            console.log(x);
+                            __getwaktu(x.dateString)
                             setKirim({
                                 ...kirim,
                                 tanggal_janji: x.dateString
@@ -105,29 +122,42 @@ export default function CSAdminJadwal({ navigation, route }) {
 
                     />
                     <MyGap jarak={20} />
-                    <Text style={{
-                        ...fonts.headline4,
-                        color: Color.blueGray[900]
-                    }}>Pilih Jam Perawatan</Text>
+                    {waktu.length > 0 &&
+                        <Text style={{
+                            ...fonts.headline4,
+                            color: Color.blueGray[900]
+                        }}>Pilih Jam Perawatan</Text>
+                    }
 
+                    {info.length > 0 &&
+
+                        <Text style={{
+                            ...fonts.body3,
+                            textAlign: 'center',
+                            color: Color.red[500]
+                        }}>{route.params.dokter} - {info}</Text>
+
+                    }
 
                     {!loading && <>
 
-                        <Picker
-                            style={{ backgroundColor: Color.white[900], width: '100%', height: 200 }}
-                            selectedValue={kirim.jam_janji}
-                            textSize={30}
-                            pickerData={waktu}
-                            selectLineSize={6}
-                            isShowSelectBackground={true}
-                            selectTextColor={Color.blueGray[900]}
-                            selectBackgroundColor={Color.primary[50] + 'AA'}
-                            // selectLineColor={Color.primary[50]}
-                            onValueChange={value => setKirim({
-                                ...kirim,
-                                jam_janji: value
-                            })}
-                        />
+                        {waktu.length > 0 &&
+                            <Picker
+                                style={{ backgroundColor: Color.white[900], width: '100%', height: 200 }}
+                                selectedValue={kirim.jam_janji}
+                                textSize={30}
+                                pickerData={waktu}
+                                selectLineSize={6}
+                                isShowSelectBackground={true}
+                                selectTextColor={Color.blueGray[900]}
+                                selectBackgroundColor={Color.primary[50] + 'AA'}
+                                // selectLineColor={Color.primary[50]}
+                                onValueChange={value => setKirim({
+                                    ...kirim,
+                                    jam_janji: value
+                                })}
+                            />
+                        }
                         {/* <View style={{
                             marginVertical: 4,
                             backgroundColor: Color.white[900],
@@ -195,7 +225,9 @@ export default function CSAdminJadwal({ navigation, route }) {
                             flex: 1,
                             paddingLeft: 6
                         }}>
-                            <MyButton title="Lanjutkan" onPress={sendServer} />
+                            {waktu.length > 0 &&
+                                <MyButton title="Lanjutkan" onPress={sendServer} />
+                            }
                         </View>
                     </View>
 
