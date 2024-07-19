@@ -173,6 +173,11 @@ export default function Home({ navigation, route }) {
     })
   }
 
+
+  const listData = dataKulit ?? [];
+  const numColumns = Math.ceil(dataKulit.length / 2);
+
+
   const __GetDataKulit = () => {
     axios.post(apiURL + 'artikel', {
       tipe: 'Masalah Kulit'
@@ -391,44 +396,51 @@ export default function Home({ navigation, route }) {
             ...fonts.headline4,
             color: Color.blueGray[900]
           }}>Pilihan Perawatan Sesuai Masalah Kulitmu</Text>
-          <FlatList contentContainerStyle={{
-            flex: 0.5,
-            justifyContent: 'space-around',
-            marginVertical: 10,
-          }} data={dataKulit} numColumns={2} renderItem={({ item, index }) => {
-            return (
-              <TouchableOpacity onPress={() => navigation.navigate('Treatment', item)} style={{
 
-                overflow: 'hidden'
-              }}>
+          <FlatList
+            horizontal
+            contentContainerStyle={{ alignSelf: 'flex-start' }}
+            data={dataKulit}
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
+            key={i => i.id}
+            renderItem={({ item, index }) => {
+              return (
+                <TouchableOpacity onPress={() => navigation.navigate('Treatment', item)} style={{
 
-                <ImageBackground source={require('../../assets/bgkulit.png')} style={{
-                  height: 60,
-                  width: windowWidth / 2.2,
-                  marginHorizontal: 2,
-                  borderRadius: 12,
-                  marginVertical: 4,
-                  padding: 12,
-                  flexDirection: 'row',
-                  alignItems: 'center'
+                  overflow: 'hidden'
                 }}>
 
-                  <Text style={{
+                  <ImageBackground source={require('../../assets/bgkulit.png')} style={{
                     flex: 1,
-                    ...fonts.headline5,
-                    color: Color.white[900]
-                  }}>{item.judul}</Text>
-                  <Image source={{
-                    uri: item.image
-                  }} style={{
-                    width: 30,
-                    height: 30,
-                  }} />
-                </ImageBackground>
+                    height: 55,
+                    width: 175,
+                    marginRight: 8,
+                    borderRadius: 12,
+                    marginTop: 12,
+                    padding: 12,
+                    flexDirection: 'row',
+                    alignItems: 'center'
+                  }}>
 
-              </TouchableOpacity>
-            )
-          }} />
+                    <Text style={{
+                      flex: 1,
+                      ...fonts.headline5,
+                      color: Color.white[900]
+                    }}>{item.judul}</Text>
+                    <Image source={{
+                      uri: item.image
+                    }} style={{
+                      width: 30,
+                      height: 30,
+                    }} />
+                  </ImageBackground>
+
+                </TouchableOpacity>
+              )
+            }} />
+
+
         </View>
 
         {/* JADWAL PERAWATANMU*/}
@@ -638,7 +650,7 @@ export default function Home({ navigation, route }) {
           </TouchableWithoutFeedback>
         </View>
 
-      </ScrollView>
+      </ScrollView >
 
 
       <Modal style={{

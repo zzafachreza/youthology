@@ -51,7 +51,7 @@ export default function Login({ navigation, route }) {
   }
 
   return (
-    <ImageBackground source={require('../../assets/login.jpg')} style={{
+    <ImageBackground source={require('../../assets/bglogin.png')} style={{
       flex: 1,
     }}>
       <StatusBar translucent={true} backgroundColor={'transparent'} barStyle="light-content" />
