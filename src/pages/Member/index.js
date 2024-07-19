@@ -12,7 +12,9 @@ import DashedLine from 'react-native-dashed-line';
 import RenderHtml from 'react-native-render-html';
 import Modal from "react-native-modal";
 import { useToast } from 'react-native-toast-notifications';
+
 export default function Member({ navigation, route }) {
+    const [isModalVisiblePoin, setModalVisiblePoin] = useState(false);
     const systemFonts = [fonts.body3.fontFamily, fonts.headline4.fontFamily];
     const toast = useToast();
     const [isModalVisible, setModalVisible] = useState(false);
@@ -41,6 +43,7 @@ export default function Member({ navigation, route }) {
     useEffect(() => {
         if (isFocus) {
             _getMember();
+            __getPoinHarian();
         }
 
         __getVouhcer()
@@ -51,14 +54,36 @@ export default function Member({ navigation, route }) {
         axios.post(apiURL + 'voucher_all', {
             tipe: 'Regular'
         }).then(res => {
-            console.log(res.data);
             setDataVoucher(res.data);
             setLoading(false);
 
         })
 
     }
+    const [REWARD, setREWARD] = useState([0, 0, 0, 0, 0, 0, 0]);
+    const [DAILY, SETDAILY] = useState(0)
+    const __getPoinHarian = () => {
+        axios.post(apiURL + 'get_daily').then(res => {
+            console.log('jadwal', res.data);
+            SETDAILY(res.data);
+            let tmp = [];
+            for (let index = 0; index < 7; index++) {
 
+                if (index < (7 - 1)) {
+                    tmp.push(parseFloat(res.data))
+                } else {
+                    tmp.push(50)
+                }
+
+            }
+            setREWARD(tmp);
+        })
+    }
+
+    const [dataCEK, setDataCek] = useState({
+        cekin: '',
+        dayin: ''
+    })
     const _getMember = () => {
 
 
@@ -69,14 +94,20 @@ export default function Member({ navigation, route }) {
             axios.post(apiURL + 'user_data', {
                 id: uu.id
             }).then(res => {
-
+                console.log('user daat', {
+                    cekin: res.data.cekin,
+                    dayin: res.data.dayin,
+                })
+                setDataCek({
+                    cekin: res.data.cekin,
+                    dayin: res.data.dayin,
+                })
                 storeData('user', res.data)
                 setUser(res.data);
             })
             axios.post(apiURL + 'member', {
                 fid_user: uu.id
             }).then(res => {
-                console.log('jadwal', res.data);
                 setData(res.data);
                 setTmp(res.data)
             })
@@ -290,20 +321,24 @@ export default function Member({ navigation, route }) {
                         marginBottom: 12,
                     }}>
 
-                        <View style={{
-                            padding: 12,
-                            flexDirection: 'row',
-                            alignItems: 'center'
-                        }}>
-                            <Image source={require('../../assets/poin.png')} style={{
-                                width: 40,
-                                height: 40,
-                            }} />
-                            <Text style={{
-                                ...fonts.headline3,
-                                left: 5,
-                            }}>{user.poin_saya} Poin</Text>
-                        </View>
+                        <TouchableOpacity onPress={() => setModalVisiblePoin(true)}>
+                            <View style={{
+                                padding: 12,
+                                flexDirection: 'row',
+                                alignItems: 'center'
+                            }}>
+                                <Image source={require('../../assets/poin.png')} style={{
+                                    width: 40,
+                                    height: 40,
+                                }} />
+                                <Text style={{
+                                    ...fonts.headline3,
+                                    left: 5,
+                                    flex: 1,
+                                }}>{user.poin_saya} Poin</Text>
+                                <MyIcon name='round-alt-arrow-right' size={30} color={Color.primary[900]} />
+                            </View>
+                        </TouchableOpacity>
                         <View style={{
                             borderBottomLeftRadius: 12,
                             borderBottomRightRadius: 12,
@@ -660,6 +695,153 @@ export default function Member({ navigation, route }) {
                         <MyGap jarak={8} />
 
                         <MyButton onPress={() => setModalVisible(false)} backgroundColor={Color.white} borderSize={2} textColor={Color.primary[900]} title="Tutup" />
+
+
+
+                    </View>
+                </View>
+            </Modal>
+
+            <Modal style={{
+                margin: 0,
+            }} isVisible={isModalVisiblePoin}
+                backdropOpacity={0.5}
+                animationIn="fadeIn"
+                animationOut="fadeOut"
+                onRequestClose={() => {
+
+                    setModalVisiblePoin(!isModalVisiblePoin);
+                }}>
+                <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+                    <View style={{
+                        height: windowHeight / 1.5,
+                        backgroundColor: Color.white[900],
+                        borderTopRightRadius: 32,
+                        borderTopLeftRadius: 32,
+                        paddingTop: 24,
+                        paddingHorizontal: 18
+                    }}>
+                        <View style={{
+                            flexDirection: 'row',
+                            alignItems: 'center'
+                        }}>
+                            <Text style={{
+                                flex: 1,
+                                ...fonts.headline4,
+                                color: Color.blueGray[900],
+                            }}>Check-in Poin</Text>
+                            <TouchableOpacity onPress={() => {
+                                setModalVisiblePoin(false)
+
+                            }}>
+                                <Icon type='ionicon' size={24} name='close-circle' color={Color.blueGray[400]} />
+                            </TouchableOpacity>
+
+                        </View>
+
+                        <View style={{
+                            marginVertical: 20,
+                            flexDirection: 'row'
+                        }}>
+                            <Text style={{
+                                flex: 1,
+                                ...fonts.body3,
+                                color: Color.blueGray[900],
+                            }}>Reward Poin Saya</Text>
+
+                            <View style={{
+                                height: 36,
+                                borderRadius: 100,
+                                paddingHorizontal: 12,
+                                backgroundColor: Color.secondary[900],
+                                flexDirection: 'row',
+                                alignItems: 'center'
+                            }}>
+                                <Image source={require('../../assets/poin.png')} style={{
+                                    width: 28,
+                                    height: 28,
+                                }} />
+                                <Text style={{
+                                    marginLeft: 5,
+                                    marginRight: 8,
+                                    ...fonts.headline5,
+                                    color: Color.white[900],
+                                }}>{user.poin_saya} poin </Text>
+                                <MyIcon name='round-alt-arrow-right' size={15} color={Color.white[900]} />
+                            </View>
+                        </View>
+
+                        <FlatList
+                            contentContainerStyle={styles.listWrapper}
+                            style={{
+                                marginBottom: 20,
+                                height: 150,
+                                flexGrow: 0
+                            }} horizontal data={REWARD} renderItem={({ item, index }) => {
+                                return (
+                                    <View style={{
+
+                                        width: 45,
+                                        height: 75,
+                                        marginRight: 6,
+                                    }}>
+                                        <View style={{
+                                            borderWidth: 1.5,
+                                            borderColor: Color.blueGray[50],
+                                            height: 75,
+                                            backgroundColor: Color.blueGray[50],
+                                            width: 45,
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            borderRadius: 8
+                                        }}>
+                                            <Text style={{
+                                                ...fonts.headline5,
+                                                color: Color.blueGray[900],
+                                            }}>+{item}</Text>
+
+                                            {parseFloat(dataCEK.dayin) < (index + 1) &&
+                                                <Image source={require('../../assets/poin.png')} style={{
+                                                    width: 28,
+                                                    height: 28,
+                                                }} />}
+
+                                            {dataCEK.cekin <= moment().format('YYYY-MM-DD') && parseFloat(dataCEK.dayin) >= (index + 1) &&
+                                                <MyIcon name='check-circle' color={Color.secondary[900]} size={28} />}
+                                        </View>
+                                        <Text style={{
+                                            textAlign: 'center',
+                                            ...fonts.caption1,
+                                            color: Color.blueGray[400],
+                                        }}>Hari {index + 1}</Text>
+                                    </View>
+                                )
+                            }} />
+                        <Text style={{
+                            ...fonts.body3,
+                            color: Color.blueGray[900],
+                            textAlign: 'center',
+                        }}>Check in setiap hari dan dapatkan poin lebih di hari ke-7 untuk kamu tukarkan menjadi voucher treatment </Text>
+                        <MyGap jarak={20} />
+                        {dataCEK.cekin != moment().format('YYYY-MM-DD') &&
+                            <MyButton title="Check-in Poin" onPress={() => {
+                                setModalVisiblePoin(false);
+                                axios.post(apiURL + 'daily_add', {
+                                    fid_user: user.id,
+                                    dayin: parseFloat(dataCEK.dayin) + 1,
+                                    poin: (parseFloat(dataCEK.dayin) + 1) == 7 ? 50 : DAILY
+                                }).then(res => {
+                                    console.log(res.data);
+                                    _getMember();
+                                    toast.show('Berhasil check-in harian', {
+                                        type: 'success'
+                                    })
+                                })
+                            }} />
+                        }
+                        <MyGap jarak={8} />
+
+                        <MyButton onPress={() => setModalVisiblePoin(false)} backgroundColor={Color.white} borderSize={2} textColor={Color.primary[900]} title="Tutup" />
 
 
 

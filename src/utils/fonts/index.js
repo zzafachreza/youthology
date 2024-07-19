@@ -8,66 +8,66 @@ export const DimensionThisPhone = windowHeight * windowWidth / 1000;
 export const fonts = {
 
   headline0: {
-    fontFamily: 'PlusJakartaSans-Bold',
+    fontFamily: 'Montserrat-Bold',
     fontSize: 40,
     lineHeight: 60
   },
 
   headline1: {
-    fontFamily: 'PlusJakartaSans-Bold',
+    fontFamily: 'Montserrat-Bold',
     fontSize: 24,
     lineHeight: 44
   },
 
   headline2: {
-    fontFamily: 'PlusJakartaSans-Bold',
+    fontFamily: 'Montserrat-Bold',
     fontSize: 22,
     lineHeight: 41
   },
 
 
   headline3: {
-    fontFamily: 'PlusJakartaSans-Bold',
+    fontFamily: 'Montserrat-Bold',
     fontSize: 18,
     lineHeight: 34
   },
 
 
   headline4: {
-    fontFamily: 'PlusJakartaSans-Bold',
+    fontFamily: 'Montserrat-Bold',
     fontSize: 16,
     lineHeight: 30
   },
 
 
   headline5: {
-    fontFamily: 'PlusJakartaSans-Bold',
+    fontFamily: 'Montserrat-Bold',
     fontSize: 14,
     lineHeight: 26
   },
 
 
   subheadline3: {
-    fontFamily: 'PlusJakartaSans-Medium',
+    fontFamily: 'Montserrat-Medium',
     fontSize: 14,
     lineHeight: 26
   },
 
 
   body2: {
-    fontFamily: 'PlusJakartaSans-Regular',
+    fontFamily: 'Montserrat-Regular',
     fontSize: 18,
     lineHeight: 34
   },
 
   body3: {
-    fontFamily: 'PlusJakartaSans-Regular',
+    fontFamily: 'Montserrat-Regular',
     fontSize: 14,
     lineHeight: 26
   },
 
   caption1: {
-    fontFamily: 'PlusJakartaSans-Medium',
+    fontFamily: 'Montserrat-Medium',
     fontSize: 12,
     lineHeight: 26
   },

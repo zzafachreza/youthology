@@ -51,25 +51,25 @@ export default function Login({ navigation, route }) {
   }
 
   return (
-    <ImageBackground source={require('../../assets/bglogin.png')} style={{
+    <ImageBackground source={require('../../assets/login.jpg')} style={{
       flex: 1,
     }}>
       <StatusBar translucent={true} backgroundColor={'transparent'} barStyle="light-content" />
       <View style={{
-        flex: 0.5
+        flex: 0.4
       }}></View>
       <View style={{
         flex: 1,
         padding: 16,
       }}>
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <View>
             <Text style={{
               ...fonts.headline2,
               color: Color.white[900],
               textAlign: 'center',
               marginBottom: 2
-            }}>Selamat datang kembali</Text>
+            }}>Mulai Konsultasikan Dengan Dokter Kami</Text>
             <Text style={{
               ...fonts.body3,
               color: Color.white[900],

@@ -33,7 +33,7 @@ export default function Blog({ navigation, route }) {
             backgroundColor: Color.white[900]
         }}>
             <StatusBar backgroundColor={Color.white[900]} barStyle="dark-content" />
-            <MyHeader title="Blog dan Artikel" color={Color.blueGray[900]} />
+            <MyHeader title="Artikel Terbaru" color={Color.blueGray[900]} />
             <View style={{
                 padding: 16,
             }}>
@@ -86,7 +86,7 @@ export default function Blog({ navigation, route }) {
                         ...fonts.headline3,
                         color: Color.blueGray[900],
                         marginBottom: 20,
-                    }}>Sedang Hangat</Text>
+                    }}>Trending</Text>
 
                     <FlatList ListEmptyComponent={loading && <MyLoading />} showsHorizontalScrollIndicator={false} data={data} horizontal renderItem={({ item, index }) => {
                         return (
@@ -142,7 +142,7 @@ export default function Blog({ navigation, route }) {
                         ...fonts.headline3,
                         color: Color.blueGray[900],
                         marginBottom: 20,
-                    }}>Blog dan Artikel Terbaru</Text>
+                    }}>Lainnya</Text>
 
                     <FlatList ListEmptyComponent={loading && <MyLoading />} showsVerticalScrollIndicator={false} data={data} renderItem={({ item, index }) => {
                         return (

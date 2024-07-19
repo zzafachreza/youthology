@@ -7,8 +7,10 @@ import { MyButton, MyGap } from '../../components'
 export default function GetStarted({ navigation, route }) {
 
     return (
-        <ImageBackground source={require('../../assets/getstarted.png')} style={{
+        <ImageBackground source={require('../../assets/getstarted.jpg')} style={{
             flex: 1,
+            height: '100%',
+            width: '100%'
         }}>
             <StatusBar translucent={true} backgroundColor={'transparent'} barStyle="light-content" />
             <View style={{

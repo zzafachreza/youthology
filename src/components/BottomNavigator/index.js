@@ -86,16 +86,16 @@ export default function BottomNavigator({ state, descriptors, navigation }) {
 
         if (label === 'Home') {
           iconName = 'home-smile';
-          Newlabel = 'Beranda';
+          Newlabel = 'Home';
         } else if (label === 'Account') {
           iconName = 'user-rounded';
-          Newlabel = 'Akun';
+          Newlabel = 'My Account';
         } else if (label === 'Treatment') {
           iconName = 'cosmetic';
-          Newlabel = 'Perawatan';
+          Newlabel = 'Treatment';
         } else if (label === 'CSAdmin') {
           iconName = 'whatsapp';
-          Newlabel = 'CS Admin';
+          Newlabel = 'Booking';
         }
 
         return (

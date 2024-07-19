@@ -118,13 +118,13 @@ export default function Register({ navigation, route }) {
                             color: Color.white[900],
                             textAlign: 'center',
                             marginBottom: 2
-                        }}>Ayo bergabung bersama kami</Text>
+                        }}>Temukan Solusi Permasalahan Kulitmu Disini</Text>
                         <Text style={{
                             ...fonts.body3,
                             color: Color.white[900],
                             textAlign: 'center',
                             marginTop: 2,
-                        }}>Lengkapi data untuk mendaftar</Text>
+                        }}>Lengkapi Data Diri Sesuai KTP</Text>
                     </View>
                     <MyGap jarak={24} />
                     <View style={{

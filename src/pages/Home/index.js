@@ -190,6 +190,10 @@ export default function Home({ navigation, route }) {
         // if (res.data.cekin !== moment().format('YYYY-MM-DD')) {
         //   setModalVisible2(true)
         // }
+        setDataCek({
+          cekin: res.data.cekin,
+          dayin: res.data.dayin,
+        })
         storeData('user', res.data)
         setUser(res.data);
       })
@@ -197,7 +201,10 @@ export default function Home({ navigation, route }) {
   }
 
   const [DAILY, SETDAILY] = useState(0)
-
+  const [dataCEK, setDataCek] = useState({
+    cekin: '',
+    dayin: ''
+  })
   const __getPoinHarian = () => {
     axios.post(apiURL + 'get_daily').then(res => {
       // console.log('jadwal', res.data);
@@ -205,7 +212,11 @@ export default function Home({ navigation, route }) {
       let tmp = [];
       for (let index = 0; index < 7; index++) {
 
-        tmp.push((index + 1) * parseFloat(res.data))
+        if (index < (7 - 1)) {
+          tmp.push(parseFloat(res.data))
+        } else {
+          tmp.push(50)
+        }
 
       }
       setREWARD(tmp);
@@ -301,7 +312,7 @@ export default function Home({ navigation, route }) {
             ...fonts.body3,
             color: Color.white[900],
             marginBottom: 4
-          }}>Selamat datang di Youthology Clinic</Text>
+          }}>Selamat Datang di Youthology Aesthetic Clinic!</Text>
           <Text style={{
             ...fonts.headline2,
             color: Color.white[900],
@@ -339,7 +350,7 @@ export default function Home({ navigation, route }) {
               flex: 1,
               ...fonts.headline4,
               color: Color.blueGray[900]
-            }}>Flash Sale!</Text>
+            }}>Promo Untukmu</Text>
             {FLASHSALE > 0 &&
               <View style={{
                 // flex: 1,
@@ -379,7 +390,7 @@ export default function Home({ navigation, route }) {
           <Text style={{
             ...fonts.headline4,
             color: Color.blueGray[900]
-          }}>Masalah Kulitmu</Text>
+          }}>Pilihan Perawatan Sesuai Masalah Kulitmu</Text>
           <FlatList contentContainerStyle={{
             flex: 0.5,
             justifyContent: 'space-around',
@@ -527,7 +538,7 @@ export default function Home({ navigation, route }) {
             ...fonts.headline4,
             color: Color.blueGray[900],
             marginBottom: 12,
-          }}>Blog dan Artikel</Text>
+          }}>Artikel Terbaru</Text>
 
 
           <FlatList ListEmptyComponent={loadingArtikel && <MyLoading />} data={dataArtikel} renderItem={({ item, index }) => {
@@ -761,7 +772,7 @@ export default function Home({ navigation, route }) {
                   }}>
                     <View style={{
                       borderWidth: 1.5,
-                      borderColor: index == 0 ? Color.secondary[900] : Color.blueGray[50],
+                      borderColor: Color.blueGray[50],
                       height: 75,
                       backgroundColor: Color.blueGray[50],
                       width: 45,
@@ -771,18 +782,23 @@ export default function Home({ navigation, route }) {
                     }}>
                       <Text style={{
                         ...fonts.headline5,
-                        color: index == 0 ? Color.secondary[900] : Color.blueGray[900],
+                        color: Color.blueGray[900],
                       }}>+{item}</Text>
-                      <Image source={require('../../assets/poin.png')} style={{
-                        width: 28,
-                        height: 28,
-                      }} />
+
+                      {parseFloat(dataCEK.dayin) < (index + 1) &&
+                        <Image source={require('../../assets/poin.png')} style={{
+                          width: 28,
+                          height: 28,
+                        }} />}
+
+                      {dataCEK.cekin <= moment().format('YYYY-MM-DD') && parseFloat(dataCEK.dayin) >= (index + 1) &&
+                        <MyIcon name='check-circle' color={Color.secondary[900]} size={28} />}
                     </View>
                     <Text style={{
                       textAlign: 'center',
                       ...fonts.caption1,
-                      color: index == 0 ? Color.secondary[900] : Color.blueGray[400],
-                    }}>Hari {index == 0 ? 'ini' : index + 1}</Text>
+                      color: Color.blueGray[400],
+                    }}>Hari {index + 1}</Text>
                   </View>
                 )
               }} />
@@ -790,14 +806,15 @@ export default function Home({ navigation, route }) {
               ...fonts.body3,
               color: Color.blueGray[900],
               textAlign: 'center',
-            }}>Check-in setiap hari dan dapatkan poin yang dapat kamu tukarkan ke voucher</Text>
+            }}>Check in setiap hari dan dapatkan poin lebih di hari ke-7 untuk kamu tukarkan menjadi voucher treatment </Text>
             <MyGap jarak={20} />
 
             <MyButton title="Check-in Poin" onPress={() => {
               setModalVisible(false);
               axios.post(apiURL + 'daily_add', {
                 fid_user: user.id,
-                poin: DAILY
+                dayin: parseFloat(dataCEK.dayin) + 1,
+                poin: (parseFloat(dataCEK.dayin) + 1) == 7 ? 50 : DAILY
               }).then(res => {
                 console.log(res.data);
                 toast.show('Berhasil check-in harian', {
