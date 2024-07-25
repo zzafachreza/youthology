@@ -26,6 +26,7 @@ export default function Home({ navigation, route }) {
   const [user, setUser] = useState({
     nama_lengkap: 'Nama Saya'
   });
+  const [member, setMember] = useState({});
   const [isModalVisible2, setModalVisible2] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
 
@@ -60,6 +61,8 @@ export default function Home({ navigation, route }) {
       __GetUserProfile();
       __getPoinHarian();
     }
+
+
 
     const unsubscribe = messaging().onMessage(async remoteMessage => {
 
@@ -116,10 +119,13 @@ export default function Home({ navigation, route }) {
   }
 
 
+
+
+
   const [FLASHSALE, setFALSHSALE] = useState(0);
   const getFalshSale = () => {
     axios.post(apiURL + 'get_flash_sale').then(res => {
-      console.log('FLASH SALE', res.data)
+
       setFALSHSALE(parseInt(res.data));
     })
   }
@@ -137,7 +143,7 @@ export default function Home({ navigation, route }) {
           // alert(token.token);
 
           if (token.token !== res.data) {
-            console.log('update TOKEN');
+
             axios.post(apiURL + 'update_token', {
               id: uu.id,
               token: token.token
@@ -201,6 +207,11 @@ export default function Home({ navigation, route }) {
         })
         storeData('user', res.data)
         setUser(res.data);
+
+        axios.post(apiURL + 'member').then(mem => {
+          setMember(mem.data.filter(i => i.level == res.data.member)[0]);
+          storeData('member', mem.data.filter(i => i.level == res.data.member)[0])
+        })
       })
     })
   }
@@ -262,7 +273,7 @@ export default function Home({ navigation, route }) {
           alignItems: 'center'
         }}>
           <TouchableOpacity onPress={() => navigation.navigate('Account')}>
-            <Image source={{
+            <FastImage source={{
               uri: user.foto_user
             }} style={{
               width: 40,
@@ -283,13 +294,19 @@ export default function Home({ navigation, route }) {
           justifyContent: 'space-between',
           alignItems: 'center'
         }}>
-          <TouchableOpacity onPress={() => navigation.navigate('Member')}>
-            <Image source={user.member == 'Silver' ? require('../../assets/badgeSilver.png') : user.member == 'Gold' ? require('../../assets/badgeGold.png') : require('../../assets/badgePlatinum.png')} style={{
-              width: 100,
-              resizeMode: 'contain',
+
+
+          <TouchableWithoutFeedback onPress={() => navigation.navigate('Member')}>
+            <FastImage source={{
+              uri: member.image
+            }} style={{
+              width: 90,
+              borderRadius: 5,
               height: 35
             }} />
-          </TouchableOpacity>
+
+          </TouchableWithoutFeedback>
+
           <TouchableOpacity onPress={() => navigation.navigate('Notifikasi')} style={{
             width: 40,
             height: 40,

@@ -82,6 +82,7 @@ export default function JadwalDetail({ navigation, route }) {
                                 <Text style={{
                                     ...fonts.body3,
                                     color: Color.blueGray[900],
+                                    maxWidth: '90%'
                                 }}>{kirim.perawatan}</Text>
                             </View>
                         </View>

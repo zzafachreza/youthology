@@ -14,7 +14,7 @@ export default function Splash({ navigation, route }) {
     setTimeout(() => {
       getData('user').then(res => {
         if (!res) {
-          navigation.replace('OnBoarding');
+          navigation.replace('GetStarted');
         } else {
           navigation.replace('MainApp');
         }
