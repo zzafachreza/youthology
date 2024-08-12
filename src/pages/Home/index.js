@@ -295,7 +295,7 @@ export default function Home({ navigation, route }) {
           alignItems: 'center'
         }}>
 
-
+          {/* fitur baru */}
           <TouchableWithoutFeedback onPress={() => navigation.navigate('Member')}>
             <FastImage source={{
               uri: member.image
