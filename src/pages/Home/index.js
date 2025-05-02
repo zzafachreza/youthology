@@ -843,7 +843,7 @@ export default function Home({ navigation, route }) {
               axios.post(apiURL + 'daily_add', {
                 fid_user: user.id,
                 dayin: parseFloat(dataCEK.dayin) + 1,
-                poin: (parseFloat(dataCEK.dayin) + 1) == 7 ? 50 : DAILY
+                poin: (parseFloat(dataCEK.dayin) + 1) == 7 ? 20 : DAILY
               }).then(res => {
                 console.log(res.data);
                 toast.show('Berhasil check-in harian', {

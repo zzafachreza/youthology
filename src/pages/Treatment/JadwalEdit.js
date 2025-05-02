@@ -10,6 +10,7 @@ import DatePicker from 'react-native-datepicker'
 import { maskJs, maskCurrency } from 'mask-js';
 import { useToast } from "react-native-toast-notifications";
 import axios from 'axios';
+import Picker from 'react-native-wheel-pick/src/picker';
 
 export default function JadwalEdit({ navigation, route }) {
 
@@ -23,7 +24,7 @@ export default function JadwalEdit({ navigation, route }) {
         setLoading(true);
         axios.post(apiURL + 'waktu').then(res => {
             console.log(res.data);
-            setWaktu(res.data)
+            setWaktu(res.data.data)
         }).finally(() => {
             setLoading(false);
         })
@@ -40,7 +41,7 @@ export default function JadwalEdit({ navigation, route }) {
                     type: 'success'
                 });
                 setLoading(false);
-                navigation.goBack();
+                navigation.pop(2);
             }
         })
         // navigation.navigate('CSAdminKonfirmasi', kirim)
@@ -117,7 +118,7 @@ export default function JadwalEdit({ navigation, route }) {
 
 
                     {!loading && <>
-                        <FlatList columnWrapperStyle={{
+                        {/* <FlatList columnWrapperStyle={{
                             flexDirection: "row", justifyContent: "space-evenly", alignItems: "center", marginVertical: 4, flex: 1,
                         }} style={{
                             marginBottom: 20, flexGrow: 0
@@ -140,7 +141,22 @@ export default function JadwalEdit({ navigation, route }) {
                                     </View>
                                 </TouchableOpacity>
                             )
-                        }} />
+                        }} /> */}
+                        <Picker
+                            style={{ backgroundColor: Color.white[900], width: '100%', height: 200 }}
+                            selectedValue={kirim.jam_janji}
+                            textSize={30}
+                            pickerData={waktu}
+                            selectLineSize={6}
+                            isShowSelectBackground={true}
+                            selectTextColor={Color.blueGray[900]}
+                            selectBackgroundColor={Color.primary[50] + 'AA'}
+                            // selectLineColor={Color.primary[50]}
+                            onValueChange={value => setKirim({
+                                ...kirim,
+                                jam_janji: value
+                            })}
+                        />
                     </>}
 
 
