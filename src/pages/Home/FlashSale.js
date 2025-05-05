@@ -135,7 +135,7 @@ export default function FlashSale({ navigation, route }) {
                                     toast.show("Maaf voucher sudah habis", {
                                         type: 'danger'
                                     });
-                                } else if (moment().format('YYYY-MM-DD') >= item.expired) {
+                                } else if (moment().format('YYYY-MM-DD') > item.expired) {
                                     toast.show("Maaf voucher sudah kadaluarsa", {
                                         type: 'danger'
                                     });
@@ -160,7 +160,7 @@ export default function FlashSale({ navigation, route }) {
                                     flex: 1,
                                     padding: 12,
                                     borderTopWidth: 1,
-                                    backgroundColor: item.jumlah == 0 || moment().format('YYYY-MM-DD') >= item.expired ? Color.blueGray[200] : Color.white[900],
+                                    backgroundColor: item.jumlah == 0 || moment().format('YYYY-MM-DD') > item.expired ? Color.blueGray[200] : Color.white[900],
                                     borderWidth: 1,
                                     borderBottomWidth: 1,
                                     borderColor: Color.blueGray[100],

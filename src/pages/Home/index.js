@@ -231,7 +231,7 @@ export default function Home({ navigation, route }) {
         if (index < (7 - 1)) {
           tmp.push(parseFloat(res.data))
         } else {
-          tmp.push(50)
+          tmp.push(20)
         }
 
       }
